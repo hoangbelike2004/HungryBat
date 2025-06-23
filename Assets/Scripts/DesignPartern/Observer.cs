@@ -6,4 +6,6 @@ using UnityEngine.Events;
 public static class Observer
 {
     public static UnityAction exploEvent;
+    public static UnityAction OnMoveEvent;
+    public static UnityAction<NormalItem.eNormalType,int> OnUpdateScore;
 }

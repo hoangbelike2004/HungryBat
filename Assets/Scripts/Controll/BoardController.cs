@@ -25,15 +25,14 @@ public class BoardController : MonoBehaviour
     private float m_timeAfterFill;
 
     private bool m_hintIsShown;
+    private LevelData m_levelData;
 
     private bool m_gameOver = false;
-    private void Start()
+    public void StartGame(LevelData level)
     {
         m_gameSettings = Resources.Load<GameSetting>(Constants.GAME_SETTINGS_PATH);
-
-
+        m_levelData = level;
         m_cam = Camera.main;
-
         m_board = new Board(this.transform, m_gameSettings);
 
         Fill();
@@ -45,7 +44,7 @@ public class BoardController : MonoBehaviour
     }
 
 
-    public void Update()
+    public void UpdateGame()
     {
         if (m_gameOver) return;
         if (IsBusy) return;
@@ -114,13 +113,20 @@ public class BoardController : MonoBehaviour
 
     private void FindMatchesAndCollapse(Cell cell1, Cell cell2)
     {
-        if (cell1.Item is BonusItem)
+        if (cell1.Item is BonusItem && cell2.Item is BonusItem)
+        {
+            cell1.ExplodeItem(); cell2.ExplodeItem();
+            Observer.OnMoveEvent?.Invoke();
+        }
+        else if (cell1.Item is BonusItem)
         {
             cell1.ExplodeItem();
+            Observer.OnMoveEvent?.Invoke();
         }
         else if (cell2.Item is BonusItem)
         {
             cell2.ExplodeItem();
+            Observer.OnMoveEvent?.Invoke();
         }
         else
         {
@@ -149,6 +155,7 @@ public class BoardController : MonoBehaviour
                 {
                     CollapseMatches(cells2, cell2);
                 }
+                Observer.OnMoveEvent?.Invoke();
             }
         }
     }
@@ -199,6 +206,25 @@ public class BoardController : MonoBehaviour
     {
         NormalItem normalItem = matches[0].Item as NormalItem;
         NormalItem.eNormalType enor = normalItem.ItemType;
+        for(int i = 0;i < m_levelData.normalItem.Length;i++)
+        {
+            List<Cell> cellGoals = new List<Cell>();
+            for (int j = 0; j < matches.Count; j++)
+            {
+                if (matches[j].Item is NormalItem)
+                {
+                    NormalItem nor = matches[j].Item as NormalItem;
+                    if(nor.ItemType == m_levelData.normalItem[i])
+                    {
+                        cellGoals.Add(matches[j]);
+                    }
+                }
+            }
+            if (cellGoals.Count > 0)
+            {
+                Observer.OnUpdateScore?.Invoke(m_levelData.normalItem[i], cellGoals.Count);
+            }
+        }
         for (int i = 0; i < matches.Count; i++)
         {
             matches[i].ExplodeItem();//tao ra hieu ung bien mat cho item
