@@ -23,6 +23,6 @@ public class CanvasMain : UICanvas
     }
     public void UpdateLevelUi()
     {
-        m_levelctr.UpdateUI();
+        m_levelctr.UpdateLevel();
     }
 }

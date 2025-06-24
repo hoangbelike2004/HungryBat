@@ -135,8 +135,6 @@ public class Board
             }
         }
     }
-
-
     internal void FillGapsWithNewItems()//lap day nhung item da bi inactive
     {
         for (int x = 0; x < boardSizeX; x++)
@@ -258,7 +256,7 @@ public class Board
         return list;
     }
 
-    internal void ConvertNormalToBonus(List<Cell> matches, Cell cellToConvert,NormalItem.eNormalType enor)//chuyen nhung item xảy ra matches thanh diem
+    internal void ConvertNormalToBonus(List<Cell> matches, Cell cellToConvert, NormalItem.eNormalType enor,LevelData leveldata)//chuyen nhung item xảy ra matches thanh diem
     {
         eBonusType dir = GetBonusItem(matches);
 
@@ -293,6 +291,7 @@ public class Board
             item.SetView();
             item.SetViewRoot(m_root);
             item.SetCells(m_cells);
+            item.SetLevelData(leveldata);
 
             cellToConvert.Free();
             cellToConvert.Assign(item);
@@ -301,10 +300,10 @@ public class Board
     }
     public eBonusType GetBonusItem(List<Cell> matches)
     {
-        if(matches.Count == 4)
+        if (matches.Count == 4)
         {
             var listhr = matches.Where(x => x.BoardX == matches[0].BoardX).ToList();
-            if(listhr.Count == matches.Count)
+            if (listhr.Count == matches.Count)
             {
                 return eBonusType.VERTICAL;
             }
@@ -314,13 +313,15 @@ public class Board
                 return eBonusType.HORIZONTAL;
             }
         }
-        else if( matches.Count == 5)
+        else if (matches.Count == 5)
         {
             return eBonusType.BOMB;
-        }else if( matches.Count == 6)
+        }
+        else if (matches.Count == 6)
         {
             return eBonusType.LIGHTNING;
-        }else if(matches.Count >= 7)
+        }
+        else if (matches.Count >= 7)
         {
             return eBonusType.POTION;
         }
@@ -342,14 +343,23 @@ public class Board
                 {
                     listhor.Clear();
                 }
+                if (listhor.Count > 0 && listhor[0].Item is BonusItem)
+                {
+                    listhor.Clear();
+                }
 
                 List<Cell> listvert = GetVerticalMatches(cell);
                 if (listvert.Count < m_matchMin)
                 {
                     listvert.Clear();
                 }
+                if (listvert.Count > 0 && listvert[0].Item is BonusItem)
+                {
+                    listvert.Clear();
+                }
+
                 listhor = listhor.Concat(listvert).Distinct().ToList();
-                if(listhor.Count > 0 && listhor.Count > list.Count)
+                if (listhor.Count > 0 && listhor.Count > list.Count)
                 {
                     list = listhor;
                 }

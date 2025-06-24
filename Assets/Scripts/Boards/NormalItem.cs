@@ -12,7 +12,8 @@ public class NormalItem : Item
         TYPE_FOUR,
         TYPE_FIVE,
         TYPE_SIX,
-        TYPE_SEVEN
+        TYPE_SEVEN,
+        TYPE_NONE
     }
 
     public eNormalType ItemType;

@@ -38,14 +38,15 @@ public class LevelItem : MonoBehaviour
         if(levelData.levelType == eStateLevel.LOCK)
         {
             lockup.SetActive(true); 
-            return;
         }
-        if (levelData.levelType == eStateLevel.OPEN)
+        else if (levelData.levelType == eStateLevel.OPEN)
         {
             lockup.SetActive(false);
             glow.SetActive(true);
-        }else if(levelData.levelType == eStateLevel.COMPLETE)
+        }
+        else if(levelData.levelType == eStateLevel.COMPLETE)
         {
+            lockup.SetActive(false);
             glow.SetActive(false);
         }
         for (int i = 0; i < levelData.starNumber; i++)

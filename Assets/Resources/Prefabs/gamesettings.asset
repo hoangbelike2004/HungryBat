@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4480dca007078e74d8414f85a2ce40ce, type: 3}
   m_Name: gamesettings
   m_EditorClassIdentifier: 
-  BoardSizeX: 6
-  BoardSizeY: 6
+  BoardSizeX: 7
+  BoardSizeY: 9
   MatchesMin: 3
   LevelMoves: 16
   LevelTime: 30

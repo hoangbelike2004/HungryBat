@@ -25,6 +25,7 @@ public class CanvasSetting : UICanvas
             overlay.gameObject.SetActive(false);
             UIManager.Instance.CloseAll();
             GameController.Instance.SetState(eStateGame.MAIN_MENU);
+            GameController.Instance.ChangeState();
         });
     }
 

@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public enum eBonusType
@@ -17,6 +18,12 @@ public class BonusItem : Item
     public eBonusType ItemType;
     public Cell[,] cells;
     public NormalItem.eNormalType normal;
+    private LevelData levelData;
+
+    public void SetLevelData(LevelData levelData)
+    {
+        this.levelData = levelData;
+    }
 
     public void SetType(eBonusType type)
     {
@@ -150,6 +157,7 @@ public class BonusItem : Item
         }
 
         bool isBonus = true;
+        GetFruitGoal(list);
         for (int i = 0; i < list.Count; i++)
         {
             if (list[i].Item is BonusItem)
@@ -190,6 +198,7 @@ public class BonusItem : Item
 
 
         bool isBonus = true;
+        GetFruitGoal(list);
         for (int i = 0; i < list.Count; i++)
         {
             if (list[i].Item is BonusItem)
@@ -228,6 +237,7 @@ public class BonusItem : Item
         }
 
         bool isBonus = true;
+        GetFruitGoal(list);
         for (int i = 0; i < list.Count; i++)
         {
             if (list[i].Item is BonusItem)
@@ -262,6 +272,7 @@ public class BonusItem : Item
             list[i] = list[j];
             list[j] = cell;
         }
+        GetFruitGoal(list);
         bool isBonus = true;
         if(rnd <= list.Count)
         {
@@ -312,6 +323,8 @@ public class BonusItem : Item
         bool isBonus = true;
         if (rnd <= list.Count)
         {
+            List<Cell> listRange = list.GetRange(0, rnd);
+            GetFruitGoal(list);
             for (int i = 0; i < rnd; i++)
             {
                 if (list[i].Item is BonusItem)
@@ -323,6 +336,7 @@ public class BonusItem : Item
         }
         else
         {
+            GetFruitGoal(list);
             for (int i = 0; i < list.Count; i++)
             {
                 if (list[i].Item is BonusItem)
@@ -335,6 +349,29 @@ public class BonusItem : Item
         if (isBonus)
         {
             Observer.exploEvent.Invoke();
+        }
+    }
+
+    public void GetFruitGoal(List<Cell> cells)
+    {
+        for (int i = 0; i < levelData.normalItem.Length; i++)
+        {
+            List<Cell> cellGoals = new List<Cell>();
+            for (int j = 0; j < cells.Count; j++)
+            {
+                if (cells[j].Item is NormalItem)
+                {
+                    NormalItem nor = cells[j].Item as NormalItem;
+                    if (nor.ItemType == levelData.normalItem[i])
+                    {
+                        cellGoals.Add(cells[j]);
+                    }
+                }
+            }
+            if (cellGoals.Count > 0)
+            {
+                Observer.OnUpdateScore?.Invoke(levelData.normalItem[i], cellGoals.Count);
+            }
         }
     }
 }

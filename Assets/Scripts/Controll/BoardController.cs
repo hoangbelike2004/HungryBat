@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ public class BoardController : MonoBehaviour
     private bool m_hintIsShown;
     private LevelData m_levelData;
 
-    private bool m_gameOver = false;
+    private bool m_gameComplete = false;
     public void StartGame(LevelData level)
     {
         m_gameSettings = Resources.Load<GameSetting>(Constants.GAME_SETTINGS_PATH);
@@ -43,10 +44,13 @@ public class BoardController : MonoBehaviour
         FindMatchesAndCollapse();
     }
 
-
+    public void SetGameComplete(bool isComplete)
+    {
+        m_gameComplete = isComplete;
+    }
     public void UpdateGame()
     {
-        if (m_gameOver) return;
+        if (m_gameComplete) return;
         if (IsBusy) return;
 
         if (!m_hintIsShown)
@@ -103,7 +107,7 @@ public class BoardController : MonoBehaviour
             }
         }
     }
- 
+
     private void ResetRayCast()
     {
         m_isDragging = false;
@@ -115,7 +119,8 @@ public class BoardController : MonoBehaviour
     {
         if (cell1.Item is BonusItem && cell2.Item is BonusItem)
         {
-            cell1.ExplodeItem(); cell2.ExplodeItem();
+            cell1.ExplodeItem();
+            cell2.ExplodeItem();
             Observer.OnMoveEvent?.Invoke();
         }
         else if (cell1.Item is BonusItem)
@@ -146,7 +151,7 @@ public class BoardController : MonoBehaviour
             }
             else
             {
-                if(cells1.Count >= m_gameSettings.MatchesMin)
+                if (cells1.Count >= m_gameSettings.MatchesMin)
                 {
                     CollapseMatches(cells1, cell1);
                 }
@@ -163,7 +168,6 @@ public class BoardController : MonoBehaviour
     private void FindMatchesAndCollapse()//Goi y cho nguoi choi nhung item co the xep thanh 1 hang va tu dong inactive nhung item danh thanh 1 hang
     {
         List<Cell> matches = m_board.FindFirstMatch();
-
         if (matches.Count > 0)
         {
             CollapseMatches(matches, null);
@@ -206,7 +210,7 @@ public class BoardController : MonoBehaviour
     {
         NormalItem normalItem = matches[0].Item as NormalItem;
         NormalItem.eNormalType enor = normalItem.ItemType;
-        for(int i = 0;i < m_levelData.normalItem.Length;i++)
+        for (int i = 0; i < m_levelData.normalItem.Length; i++)
         {
             List<Cell> cellGoals = new List<Cell>();
             for (int j = 0; j < matches.Count; j++)
@@ -214,7 +218,7 @@ public class BoardController : MonoBehaviour
                 if (matches[j].Item is NormalItem)
                 {
                     NormalItem nor = matches[j].Item as NormalItem;
-                    if(nor.ItemType == m_levelData.normalItem[i])
+                    if (nor.ItemType == m_levelData.normalItem[i])
                     {
                         cellGoals.Add(matches[j]);
                     }
@@ -232,7 +236,7 @@ public class BoardController : MonoBehaviour
 
         if (matches.Count > m_gameSettings.MatchesMin)
         {
-            m_board.ConvertNormalToBonus(matches, cellEnd, enor);
+            m_board.ConvertNormalToBonus(matches, cellEnd, enor,m_levelData);
         }
 
         StartCoroutine(ShiftDownItemsCoroutine());

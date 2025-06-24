@@ -46,6 +46,8 @@ public class SelectLevelUI : UICanvas
         overlay.DOFade(0.1f, 0f);
         overlay.gameObject.SetActive(false);
         GameController.Instance.SetLevelData(LevelData);
+        GameController.Instance.SetState(eStateGame.STARTED);
+        GameController.Instance.ChangeState();
         UIManager.Instance.CloseUI<CanvasMain>(0f);
         UIManager.Instance.CloseUI<SelectLevelUI>(0f);
     }
