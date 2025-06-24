@@ -373,5 +373,6 @@ public class BonusItem : Item
                 Observer.OnUpdateScore?.Invoke(levelData.normalItem[i], cellGoals.Count);
             }
         }
+        GameController.Instance.Setscore(cells.Count);
     }
 }

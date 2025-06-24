@@ -101,7 +101,7 @@ public class Board
                     }
                 }
 
-                item.SetType(/*Utils.GetRandomNormalTypeExcept(types.ToArray())*/NormalItem.eNormalType.TYPE_FIVE);
+                item.SetType(Utils.GetRandomNormalTypeExcept(types.ToArray()));
                 item.SetView();
                 item.SetViewRoot(m_root);
 

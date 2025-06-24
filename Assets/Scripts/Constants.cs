@@ -49,7 +49,7 @@ public static class Constants
 
     public const string PREFAB_NORMAL_TYPE_THREE_GOAL = "UIGoal/FruitGoalBlueberry";
 
-    public const string PREFAB_NORMAL_TYPE_FOUR_GOAL = "UIGoal/FruitGoalBlueberry";
+    public const string PREFAB_NORMAL_TYPE_FOUR_GOAL = "UIGoal/FruitGoalGrapes";
 
     public const string PREFAB_NORMAL_TYPE_FIVE_GOAL = "UIGoal/FruitGoalOrange";
 

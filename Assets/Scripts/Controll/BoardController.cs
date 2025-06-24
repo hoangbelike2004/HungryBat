@@ -229,6 +229,7 @@ public class BoardController : MonoBehaviour
                 Observer.OnUpdateScore?.Invoke(m_levelData.normalItem[i], cellGoals.Count);
             }
         }
+        GameController.Instance.Setscore(matches.Count);
         for (int i = 0; i < matches.Count; i++)
         {
             matches[i].ExplodeItem();//tao ra hieu ung bien mat cho item

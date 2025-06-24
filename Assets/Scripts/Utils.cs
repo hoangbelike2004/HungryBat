@@ -9,8 +9,7 @@ public class Utils
 {
     public static NormalItem.eNormalType GetRandomNormalType()
     {
-        NormalItem.eNormalType[] allValues = ((NormalItem.eNormalType[])Enum.GetValues(typeof(NormalItem.eNormalType)))
-        .Where(v => v != NormalItem.eNormalType.TYPE_NONE).ToArray();
+        NormalItem.eNormalType[] allValues = ((NormalItem.eNormalType[])Enum.GetValues(typeof(NormalItem.eNormalType)));
         NormalItem.eNormalType result = allValues[URandom.Range(0, allValues.Length)];
 
         return result;

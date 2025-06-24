@@ -17,7 +17,7 @@ public class GameController : Singleton<GameController>
     private BoardController m_boarcontroll;
     private CanvasGamePlay m_canvasGamePlay;
     private CanvasMain m_canvasMain;
-    private int star, numbermove, sumItemAmout;
+    private int star, numbermove, sumItemAmout, score;
     private float completionrate;
     bool isCoroutineRunning;
     public List<int> itemScore;
@@ -60,6 +60,8 @@ public class GameController : Singleton<GameController>
     {
         m_canvasGamePlay = UIManager.Instance.OpenUI<CanvasGamePlay>();
         m_canvasGamePlay.SetLevelData(_levelData);
+        sumItemAmout = 0;
+        score = 0;
         completionrate = 0;
         numbermove = _levelData.moveNumber;
         itemScore = new List<int>();
@@ -93,14 +95,31 @@ public class GameController : Singleton<GameController>
             Destroy(m_boarcontroll.gameObject);
             m_boarcontroll = null;
             m_canvasGamePlay = null;
+            itemScore.Clear();
+            StopAllCoroutines();
+            DOTween.KillAll();
         }
     }
     public void ShowMenu()
     {
         ClearLevel();
+
         m_canvasMain = UIManager.Instance.OpenUI<CanvasMain>();
         m_canvasMain.UpdateLevelUi();
-        m_canvasMain.UpdateLevelUi();
+    }
+    public void ReLoad()
+    {
+        score = 0;
+        completionrate = 0;
+        for (int i = 0; i < _levelData.itemAmount.Length; i++)
+        {
+            itemScore[i] = _levelData.itemAmount[i];
+        }
+        numbermove = _levelData.moveNumber;
+        itemScore = new List<int>();
+        m_boarcontroll.SetGameComplete(false);
+        m_canvasGamePlay.ResetUI();
+        Setscore(score);
     }
     private IEnumerator WaitBoardController()
     {
@@ -114,42 +133,49 @@ public class GameController : Singleton<GameController>
         if (star >= _levelData.starNumber)
         {
             _levelData.starNumber = star;
-            if(_levelData.starNumber == 3)
+            if (_levelData.starNumber == 3)
             {
                 _levelData.levelType = eStateLevel.COMPLETE;
             }
         }
         CanvasComplete completeUi = UIManager.Instance.OpenUI<CanvasComplete>();
-        completeUi.OnActive(0,_levelData.starNumber);
+        completeUi.OnActive(score, _levelData.starNumber);
+        completeUi.SetLevelData(_levelData);
+    }
+    public void Setscore(int score)
+    {
+        this.score += score;
+        m_canvasGamePlay.UpdateUI(numbermove, itemScore, completionrate, this.score);
     }
     public void SetMove()
     {
         numbermove--;
-        m_canvasGamePlay.UpdateUI(numbermove, itemScore, completionrate);
+        m_canvasGamePlay.UpdateUI(numbermove, itemScore, completionrate, score);
         if (numbermove == 0)
         {
             isCoroutineRunning = true;
             StartCoroutine(WaitBoardController());
         }
     }
-    public void SetFruitGoalAndCompletionrate(NormalItem.eNormalType type, int score)//update ui mục tiêu và tỉ lệ hoàn thành
+    public void SetFruitGoalAndCompletionrate(NormalItem.eNormalType type, int numbergoal)//update ui mục tiêu và tỉ lệ hoàn thành
     {
         int tmp = 0;
         for (int i = 0; i < itemScore.Count; i++)
         {
-                if (_levelData.normalItem[i] == type)
+            if (_levelData.normalItem[i] == type)
+            {
+                itemScore[i] -= numbergoal;
+                if (itemScore[i] < 0)
                 {
-                    itemScore[i] -= score;
-                    if (itemScore[i] < 0)
-                    {
-                        itemScore[i] = 0;
-                    }
+                    itemScore[i] = 0;
                 }
+                Debug.Log(itemScore[i]);
+            }
             tmp += itemScore[i];
         }
         completionrate = (float)(sumItemAmout - tmp) / sumItemAmout;
         star = completionrate < 0.3f ? 0 : (completionrate < 0.6f ? 1 : (completionrate < 1f ? 2 : 3));
-        m_canvasGamePlay.UpdateUI(numbermove, itemScore, completionrate);
+        m_canvasGamePlay.UpdateUI(numbermove, itemScore, completionrate, this.score);
         if (star == 3)
         {
             isCoroutineRunning = true;

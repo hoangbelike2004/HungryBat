@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -32,7 +33,7 @@ public class CanvasGamePlay : UICanvas
             UIGoal prefab = Resources.Load<UIGoal>(GetPrefab(mLevelData.normalItem[i]));
             prefab = Instantiate(prefab);
             prefab.transform.SetParent(parent, false);
-            prefab.UpdateGoal(levelData.itemAmount[i]);
+            prefab.UpdateGoal(mLevelData.itemAmount[i]);
             listgoals.Add(prefab);
             if (i  < mLevelData.normalItem.Length - 1)
             {
@@ -45,8 +46,17 @@ public class CanvasGamePlay : UICanvas
         sliderbar.value = 0;
         txtScore.text = "0";
     }
-
-    public void UpdateUI(int moveNumber, List<int> itemAmout,float completionrate)
+    public void ResetUI()
+    {
+        for (int i = 0;i < listgoals.Count; i++)
+        {
+            listgoals[i].UpdateGoal(mLevelData.itemAmount[i]);
+        }
+        txtMoverNumber.text = mLevelData.moveNumber.ToString();
+        sliderbar.value = 0;
+        txtScore.text = "0";
+    }
+    public void UpdateUI(int moveNumber, List<int> itemAmout,float completionrate,int score)
     {
         txtMoverNumber.text = moveNumber.ToString();
         int sumtmp = 0;
@@ -55,8 +65,8 @@ public class CanvasGamePlay : UICanvas
             sumtmp += mLevelData.itemAmount[i];
             listgoals[i].UpdateGoal(itemAmout[i]);
         }
-        sliderbar.value = completionrate;
-
+        sliderbar.DOValue(completionrate, 0.2f).SetEase(Ease.InOutCubic);
+        txtScore.text = score.ToString();
     }
     public string GetPrefab(NormalItem.eNormalType type)
     {
