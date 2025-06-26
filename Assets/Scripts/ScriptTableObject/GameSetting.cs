@@ -8,6 +8,8 @@ public class GameSetting : ScriptableObject
     public int BoardSizeX = 5;
 
     public int BoardSizeY = 5;
+    public float OriginX = -2.5f;
+    public float OriginY = -2.5f;
 
     public int MatchesMin = 3;
 

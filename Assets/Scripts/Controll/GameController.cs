@@ -12,6 +12,8 @@ public enum eStateGame
 }
 public class GameController : Singleton<GameController>
 {
+    public eStateGame StateGame => stateGame;
+    public int coin;
     private eStateGame stateGame;
     private LevelData _levelData;
     private BoardController m_boarcontroll;
@@ -19,11 +21,17 @@ public class GameController : Singleton<GameController>
     private CanvasMain m_canvasMain;
     private int star, numbermove, sumItemAmout, score;
     private float completionrate;
-    bool isCoroutineRunning;
-    public List<int> itemScore;
+    private bool isCoroutineRunning;
+    private List<int> itemScore;
+    private BonusData bonusdata;
+    private GameSupportBonus m_gameSupportBonus;
     private void Start()
     {
-        UIManager.Instance.OpenUI<CanvasMain>();
+        m_canvasMain = UIManager.Instance.OpenUI<CanvasMain>();
+        m_gameSupportBonus = Resources.Load<GameSupportBonus>(Constants.GAME_SUPPORT_BONUS_PATH);
+        m_canvasMain.SetGameSupportBonus(m_gameSupportBonus);
+        m_canvasMain.SetState(eStateMain.HOME);
+        m_canvasMain.UpdateCoin(coin);
     }
     public void Update()
     {
@@ -35,6 +43,21 @@ public class GameController : Singleton<GameController>
     public void SetLevelData(LevelData levelData)//cần setdata khi started
     {
         _levelData = levelData;
+    }
+    public void SetBonusData(BonusData data)
+    {
+        if (bonusdata != null) return;
+        bonusdata = data;
+        if (m_boarcontroll != null)
+        {
+            m_boarcontroll.SetBonusData(data);
+        }
+    }
+    public void UsedBonus()
+    {
+        bonusdata.amout -= 1;
+        bonusdata = null;
+        m_canvasGamePlay.UpdateUISupportBonus();
     }
     public void SetState(eStateGame state)
     {
@@ -60,6 +83,7 @@ public class GameController : Singleton<GameController>
     {
         m_canvasGamePlay = UIManager.Instance.OpenUI<CanvasGamePlay>();
         m_canvasGamePlay.SetLevelData(_levelData);
+        m_canvasGamePlay.UpdateUISupportBonus();
         sumItemAmout = 0;
         score = 0;
         completionrate = 0;
@@ -75,12 +99,19 @@ public class GameController : Singleton<GameController>
     }
     public void GameComplete()
     {
+        Debug.Log(1);
         if (star > _levelData.starNumber)
         {
             _levelData.starNumber = star;
             if (_levelData.starNumber == 3)
             {
                 _levelData.levelType = eStateLevel.COMPLETE;
+                if(_levelData.coin > 0)
+                {
+                    coin += _levelData.coin;
+                    _levelData.coin = 0;
+                    m_canvasMain.UpdateCoin(coin);
+                }
             }
         }
         ClearLevel();
@@ -97,14 +128,12 @@ public class GameController : Singleton<GameController>
             m_canvasGamePlay = null;
             itemScore.Clear();
             StopAllCoroutines();
-            DOTween.KillAll();
         }
     }
     public void ShowMenu()
     {
         ClearLevel();
-
-        m_canvasMain = UIManager.Instance.OpenUI<CanvasMain>();
+        m_canvasMain.Open();
         m_canvasMain.UpdateLevelUi();
     }
     public void ReLoad()
@@ -129,6 +158,7 @@ public class GameController : Singleton<GameController>
             yield return new WaitForEndOfFrame();
         }
         m_boarcontroll.SetGameComplete(true);
+        int cointmp = 0;
         yield return new WaitForSeconds(1f);
         if (star >= _levelData.starNumber)
         {
@@ -136,10 +166,17 @@ public class GameController : Singleton<GameController>
             if (_levelData.starNumber == 3)
             {
                 _levelData.levelType = eStateLevel.COMPLETE;
+                if (_levelData.coin > 0)
+                {
+                    coin += _levelData.coin;
+                    cointmp = _levelData.coin;
+                    _levelData.coin = 0;
+                    m_canvasMain.UpdateCoin(coin);
+                }
             }
         }
         CanvasComplete completeUi = UIManager.Instance.OpenUI<CanvasComplete>();
-        completeUi.OnActive(score, _levelData.starNumber);
+        completeUi.OnActive(score, _levelData.starNumber,cointmp);
         completeUi.SetLevelData(_levelData);
     }
     public void Setscore(int score)
@@ -169,7 +206,6 @@ public class GameController : Singleton<GameController>
                 {
                     itemScore[i] = 0;
                 }
-                Debug.Log(itemScore[i]);
             }
             tmp += itemScore[i];
         }
@@ -181,6 +217,14 @@ public class GameController : Singleton<GameController>
             isCoroutineRunning = true;
             StartCoroutine(WaitBoardController());
         }
+    }
+    public void SetCoin(int coin)
+    {
+        this.coin -= coin;
+    }
+    public int GetCoin()
+    {
+        return this.coin;
     }
     private void OnEnable()
     {

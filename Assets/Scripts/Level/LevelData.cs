@@ -18,4 +18,5 @@ public class LevelData
     public int starNumber;
     public NormalItem.eNormalType[] normalItem;
     public int[] itemAmount;
+    public int coin;
 }

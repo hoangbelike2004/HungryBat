@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,6 +11,8 @@ public class CanvasGamePlay : UICanvas
     [SerializeField] TextMeshProUGUI txtMoverNumber,txtScore;
     [SerializeField] RectTransform parent;
     [SerializeField] Slider sliderbar;
+    [SerializeField] List<BonusUI> bonusUIs;
+    [SerializeField] GameSupportBonus gameSupportBonus;
     private List<UIGoal> listgoals;
     private int sumItemAmout;
     private LevelData mLevelData;
@@ -67,6 +69,18 @@ public class CanvasGamePlay : UICanvas
         }
         sliderbar.DOValue(completionrate, 0.2f).SetEase(Ease.InOutCubic);
         txtScore.text = score.ToString();
+    }
+    public void UpdateUISupportBonus()//chay moi khi người choi su dung item
+    {
+        for(int i = 0;i < gameSupportBonus.bonusDatas.Count;i++)
+        {
+            if (gameSupportBonus.bonusDatas[i].state == eStateBonusItem.SELECTED)
+            {
+                bonusUIs[i].gameObject.SetActive(true);
+                bonusUIs[i].SetBonusData(gameSupportBonus.bonusDatas[i]);
+                bonusUIs[i].UpdateAmout();
+            }
+        }
     }
     public string GetPrefab(NormalItem.eNormalType type)
     {

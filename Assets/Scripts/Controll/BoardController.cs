@@ -29,6 +29,7 @@ public class BoardController : MonoBehaviour
     private LevelData m_levelData;
 
     private bool m_gameComplete = false;
+    private BonusData m_bonusData;
     public void StartGame(LevelData level)
     {
         m_gameSettings = Resources.Load<GameSetting>(Constants.GAME_SETTINGS_PATH);
@@ -47,6 +48,10 @@ public class BoardController : MonoBehaviour
     public void SetGameComplete(bool isComplete)
     {
         m_gameComplete = isComplete;
+    }
+    public void SetBonusData(BonusData bonus)
+    {
+        m_bonusData = bonus;
     }
     public void UpdateGame()
     {
@@ -67,6 +72,20 @@ public class BoardController : MonoBehaviour
             var hit = Physics2D.Raycast(m_cam.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (hit.collider != null)
             {
+                if (m_bonusData != null)
+                {
+                    Cell cellcr = hit.collider.GetComponent<Cell>();
+                    if (cellcr.Item is NormalItem)
+                    {
+                        NormalItem nor = cellcr.Item as NormalItem;
+                        cellcr.ExplodeItem();
+                        m_board.ConvertNormalToBonus(cellcr, nor.ItemType, m_bonusData.type, m_levelData);
+                        GameController.Instance.UsedBonus();
+                        m_bonusData = null;
+                        return;
+                    }
+                    //thực hiện convert normal => bonus
+                }
                 m_isDragging = true;
                 m_hitCollider = hit.collider;
             }
@@ -237,7 +256,7 @@ public class BoardController : MonoBehaviour
 
         if (matches.Count > m_gameSettings.MatchesMin)
         {
-            m_board.ConvertNormalToBonus(matches, cellEnd, enor,m_levelData);
+            m_board.ConvertNormalToBonus(matches, cellEnd, enor, m_levelData);
         }
 
         StartCoroutine(ShiftDownItemsCoroutine());

@@ -15,6 +15,9 @@ public class SelectLevelUI : UICanvas
     [SerializeField] RectTransform box;
     [SerializeField] Vector2[] pos;
     [SerializeField] RectTransform[] UiCollects;
+    [SerializeField] GameSupportBonus gameSupport;
+    [SerializeField] Transform parent;
+    [SerializeField] List<BonusUI> bonUIs;
     private LevelData LevelData;
     private void Start()
     {
@@ -22,7 +25,7 @@ public class SelectLevelUI : UICanvas
         btnPlay.onClick.AddListener(() =>
         {
             PlayGame();
-        });  
+        });
     }
     public void SetLevelData(LevelData levelData)
     {
@@ -32,6 +35,7 @@ public class SelectLevelUI : UICanvas
     public void UpdateUi()
     {
         txtTitleLevel.text = "Level " + LevelData.level.ToString();
+        SetItemSupport();
         ActiveCollect();
     }
     public void Active()
@@ -82,8 +86,12 @@ public class SelectLevelUI : UICanvas
 
         }
     }
-    public void GetItemSupport()
+    public void SetItemSupport()
     {
-
+        for(int i = 0;i < gameSupport.bonusDatas.Count; i++)
+        {
+            bonUIs[i].SetBonusData(gameSupport.bonusDatas[i]);
+            bonUIs[i].UpdateUI();
+        }
     }
 }

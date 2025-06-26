@@ -11,6 +11,9 @@ public class Board
 
     private int boardSizeY;
 
+    private float originX;
+    private float originY;
+
     private Cell[,] m_cells;
     public List<Cell> row_collected_item
     {
@@ -32,6 +35,9 @@ public class Board
         this.boardSizeX = gameSettings.BoardSizeX;
         this.boardSizeY = gameSettings.BoardSizeY;
 
+        this.originX = gameSettings.OriginX;
+        this.originY = gameSettings.OriginY;
+
         m_cells = new Cell[boardSizeX, boardSizeY];
         row_collected_item = new List<Cell>(6);
         CreateBoard();
@@ -39,7 +45,7 @@ public class Board
 
     private void CreateBoard()
     {
-        Vector3 origin = new Vector3(-2, -2.5f, 0f);
+        Vector3 origin = new Vector3(originX, originY, 0f);
         GameObject prefabBG0 = Resources.Load<GameObject>(Constants.PREFAB_CELL_BACKGROUND0);
         GameObject prefabBG1 = Resources.Load<GameObject>(Constants.PREFAB_CELL_BACKGROUND1);
         bool isBg = true;
@@ -255,7 +261,41 @@ public class Board
 
         return list;
     }
+    internal void ConvertNormalToBonus(Cell cellToConvert,NormalItem.eNormalType enor, eBonusType dir, LevelData leveldata)//chuyen nhung item xảy ra matches thanh diem
+    {
+        BonusItem item = new BonusItem();
+        switch (dir)
+        {
+            case eBonusType.HORIZONTAL:
+                item.SetType(eBonusType.HORIZONTAL);
+                break;
+            case eBonusType.VERTICAL:
+                item.SetType(eBonusType.VERTICAL);
+                break;
+            case eBonusType.BOMB:
+                item.SetType(eBonusType.BOMB);
+                break;
+            case eBonusType.LIGHTNING:
+                item.SetType(eBonusType.LIGHTNING);
+                break;
+            case eBonusType.POTION:
+                item.SetType(eBonusType.POTION);
+                item.SetEnormal(enor);
+                break;
+        }
 
+        if (item != null)
+        {
+            item.SetView();
+            item.SetViewRoot(m_root);
+            item.SetCells(m_cells);
+            item.SetLevelData(leveldata);
+
+            cellToConvert.Free();
+            cellToConvert.Assign(item);
+            cellToConvert.ApplyItemPosition(true);
+        }
+    }
     internal void ConvertNormalToBonus(List<Cell> matches, Cell cellToConvert, NormalItem.eNormalType enor,LevelData leveldata)//chuyen nhung item xảy ra matches thanh diem
     {
         eBonusType dir = GetBonusItem(matches);

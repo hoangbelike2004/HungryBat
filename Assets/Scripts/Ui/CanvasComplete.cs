@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class CanvasComplete : UICanvas
 {
     [SerializeField] Button btnHome,btnReload;
-    [SerializeField] TextMeshProUGUI txtScore;
+    [SerializeField] TextMeshProUGUI txtScore,txtCoin;
     [SerializeField] RectTransform box,glow;
     [SerializeField] Image overlay;
     [SerializeField] RectTransform[] visualstars;
@@ -20,7 +20,7 @@ public class CanvasComplete : UICanvas
         btnReload.onClick.AddListener(ReLoadGame);
     }
 
-    public void OnActive(int score,int star)
+    public void OnActive(int score,int star,int coin)
     {
         overlay.DOFade(0.5f, 0.1f);
         glow.DOScale(1f, 0.3f);
@@ -28,6 +28,7 @@ public class CanvasComplete : UICanvas
         box.DOScale(1f, 0.3f).SetEase(Ease.InCubic).OnComplete(() =>
         {
             txtScore.text = score.ToString();
+            txtCoin.text = coin.ToString();
             Sequence sq = DOTween.Sequence();
             for (int i = 0; i < star; i++)
             {

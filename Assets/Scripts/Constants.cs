@@ -4,6 +4,7 @@ public static class Constants
 {
     public const string GAME_SETTINGS_PATH = "Prefabs/gamesettings";
     public const string GAME_LEVEL_PATH = "Prefabs/GameLevel";
+    public const string GAME_SUPPORT_BONUS_PATH = "Prefabs/GameSupportBonus";
     public const string LEVEL_ITEM_PATH = "UI/LevelItem";
 
     public const string PREFAB_CELL_BACKGROUND0 = "Prefabs/BG0";
@@ -57,4 +58,5 @@ public static class Constants
 
     public const string PREFAB_NORMAL_TYPE_SEVEN_GOAL = "UIGoal/FruitGoalStrawberry";
     public const string PREFAB_PLUS_GOAL = "UIGoal/Plus";
+    public const string PREFAB_ITEM_SHOP = "Prefabs/ItemShop";
 }

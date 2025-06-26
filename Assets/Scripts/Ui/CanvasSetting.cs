@@ -20,12 +20,19 @@ public class CanvasSetting : UICanvas
         });
         btnQuit.onClick.AddListener(() =>
         {
-            box.DOAnchorPos(new Vector2(0, 1700), 0f);
-            overlay.DOFade(0.1f, 0f);
-            overlay.gameObject.SetActive(false);
-            UIManager.Instance.CloseAll();
-            GameController.Instance.SetState(eStateGame.MAIN_MENU);
-            GameController.Instance.ChangeState();
+            if(GameController.Instance.StateGame == eStateGame.STARTED)
+            {
+                box.DOAnchorPos(new Vector2(0, 1700), 0f);
+                overlay.DOFade(0.1f, 0f);
+                overlay.gameObject.SetActive(false);
+                UIManager.Instance.CloseAll();
+                GameController.Instance.SetState(eStateGame.MAIN_MENU);
+                GameController.Instance.ChangeState();
+            }
+            else
+            {
+                Application.Quit();
+            }
         });
     }
 

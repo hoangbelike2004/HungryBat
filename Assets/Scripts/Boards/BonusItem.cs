@@ -272,11 +272,12 @@ public class BonusItem : Item
             list[i] = list[j];
             list[j] = cell;
         }
-        GetFruitGoal(list);
         bool isBonus = true;
         if(rnd <= list.Count)
         {
-            for(int i = 0;i < rnd; i++)
+            List<Cell> cells = list.GetRange(0, rnd);
+            GetFruitGoal(cells);
+            for (int i = 0;i < rnd; i++)
             {
                 if(list[i].Item is BonusItem)
                 {
@@ -287,6 +288,7 @@ public class BonusItem : Item
         }
         else
         {
+            GetFruitGoal(list);
             for (int i = 0; i < list.Count; i++)
             {
                 if (list[i].Item is BonusItem)
