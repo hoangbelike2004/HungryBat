@@ -19,17 +19,20 @@ public class GameController : Singleton<GameController>
     private BoardController m_boarcontroll;
     private CanvasGamePlay m_canvasGamePlay;
     private CanvasMain m_canvasMain;
-    private int star, numbermove, sumItemAmout, score;
+    private int star, numbermove, sumItemAmout, score,currentProgess;
     private float completionrate;
     private bool isCoroutineRunning;
     private List<int> itemScore;
     private BonusData bonusdata;
     private GameSupportBonus m_gameSupportBonus;
+    private GameEvent m_gameevent;
     private void Start()
     {
         m_canvasMain = UIManager.Instance.OpenUI<CanvasMain>();
         m_gameSupportBonus = Resources.Load<GameSupportBonus>(Constants.GAME_SUPPORT_BONUS_PATH);
+        m_gameevent = Resources.Load<GameEvent>(Constants.GAME_EVENT_PATH);
         m_canvasMain.SetGameSupportBonus(m_gameSupportBonus);
+        m_canvasMain.SetGameEvent(m_gameevent);
         m_canvasMain.SetState(eStateMain.HOME);
         m_canvasMain.UpdateCoin(coin);
     }
@@ -178,6 +181,7 @@ public class GameController : Singleton<GameController>
         CanvasComplete completeUi = UIManager.Instance.OpenUI<CanvasComplete>();
         completeUi.OnActive(score, _levelData.starNumber,cointmp);
         completeUi.SetLevelData(_levelData);
+        currentProgess++;
     }
     public void Setscore(int score)
     {
@@ -225,6 +229,11 @@ public class GameController : Singleton<GameController>
     public int GetCoin()
     {
         return this.coin;
+    }
+
+    public int GetCurrentProgess()
+    {
+        return currentProgess;
     }
     private void OnEnable()
     {

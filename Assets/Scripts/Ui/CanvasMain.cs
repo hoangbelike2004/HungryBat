@@ -19,8 +19,6 @@ public class CanvasMain : UICanvas
     [SerializeField] GameObject[] listObject;
     [SerializeField] RectTransform[] iconRects;
     [SerializeField] int offsetYIcon;
-    GameSupportBonus gameSupportBonus;
-    LevelController m_levelctr;
 
 
     [Header("SHOP")]
@@ -29,7 +27,13 @@ public class CanvasMain : UICanvas
     [SerializeField] RectTransform NotificationFailRect, NotificationSuccessRect;
     private List<BuyBonusItem> buyBonusItems = new List<BuyBonusItem>();
 
+    [Header("EVENT")]
+    [SerializeField] Transform parentItemEvent;
+    private List<EventItem> eventItems = new List<EventItem>();
     private eStateMain cunrentState;
+    private GameSupportBonus gameSupportBonus;
+    private GameEvent gameEvent;
+    private LevelController m_levelctr;
     private void Awake()
     {
         m_levelctr = new GameObject("LevelController").AddComponent<LevelController>();
@@ -90,6 +94,23 @@ public class CanvasMain : UICanvas
     }
     public void ActiveEvent()
     {
+        if (eventItems.Count < 0)
+        {
+            for (int i = 0; i < gameEvent.events.Count; i++)
+            {
+                EventItem prefab = Resources.Load<EventItem>(Constants.GAME_EVENT_PATH);
+                EventItem even = Instantiate(prefab, parentItemEvent);
+                even.SetEventData(gameEvent.events[i]);
+                even.UpdateUIEvent();
+            }
+        }
+        else
+        {
+            for (int i = 0; i < eventItems.Count; i++)
+            {
+                eventItems[i].UpdateUIEvent();
+            }
+        }
     }
 
     public void ActiveShop()
@@ -124,6 +145,10 @@ public class CanvasMain : UICanvas
     public void SetGameSupportBonus(GameSupportBonus gameSupportBonus)
     {
         this.gameSupportBonus = gameSupportBonus;
+    }
+    public void SetGameEvent(GameEvent gameEvent)
+    {
+        this.gameEvent = gameEvent;
     }
     public void ActiveNotification(bool isSucces)
     {

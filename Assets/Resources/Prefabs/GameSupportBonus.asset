@@ -17,9 +17,9 @@ MonoBehaviour:
     description: Has explosive properties that help you clear large areas of the
       board.
     price: 100
-    amout: 95
+    amout: 0
     type: 3
-    state: 0
+    state: 1
     prefab: {fileID: 4399429476342232457, guid: 80b84d51db0cc064ba3f3d953b2e9627, type: 3}
   - name: Lightning
     description: Has the ability to randomly remove fruits from the board

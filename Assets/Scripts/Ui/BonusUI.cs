@@ -52,7 +52,15 @@ public class BonusUI : MonoBehaviour
         }
         else
         {
-            SelectionIndicator.gameObject.SetActive(true);
+            if(bonusdata.amout == 0)
+            {
+                bonusdata.state = eStateBonusItem.UNSELECTED;
+                SelectionIndicator.gameObject.SetActive(false);
+            }
+            else
+            {
+                SelectionIndicator.gameObject.SetActive(true);
+            }
         }
     }
     public void UpdateAmout()
