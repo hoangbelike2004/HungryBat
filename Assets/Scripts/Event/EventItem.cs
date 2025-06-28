@@ -11,8 +11,9 @@ public class EventItem : MonoBehaviour
     [SerializeField] TextMeshProUGUI txtprogess;
     [SerializeField] Image received;
     [SerializeField] private GameLevel gamelevel;
-
+    public eStateEvent eStateEvent;
     private EventData evendata;
+    private GameSupportBonus gameSupportBonus;
 
     private void Start()
     {
@@ -25,25 +26,39 @@ public class EventItem : MonoBehaviour
         switch (evendata.typeAward)
         {
             case eAwardType.AWARD_BOMB:
+                gameSupportBonus.bonusDatas[0].amout += evendata.numberofReward;
                 break;
             case eAwardType.AWARD_LIGHTNING:
+                gameSupportBonus.bonusDatas[1].amout += evendata.numberofReward;
                 break;
             case eAwardType.AWARD_POTION:
+                gameSupportBonus.bonusDatas[2].amout += evendata.numberofReward;
                 break;
             case eAwardType.AWARD_COIN:
+                GameController.Instance.SetCoin(evendata.numberofReward);
                 break;
             case eAwardType.AWARD_HEARTS:
                 break;
         }
+        UpdateUIEvent();
     }
     public void SetEventData(EventData eventData)
     {
         this.evendata = eventData;
     }
+    public void SetGameSupportBonus(GameSupportBonus gameSupportBonus)
+    {
+        this.gameSupportBonus = gameSupportBonus;
+    }
     public void UpdateUIEvent()
     {
         if (evendata == null) return;
-        if (evendata.stateEvent == eStateEvent.REWARDCLAIMED) return;
+        eStateEvent = evendata.stateEvent;
+        if (evendata.stateEvent == eStateEvent.REWARDCLAIMED)
+        {
+            AciveState();
+            return;
+        };
         int level = 0;
         for (int i = 0; i < gamelevel.levels.Count; i++)
         {
@@ -63,7 +78,6 @@ public class EventItem : MonoBehaviour
         {
             evendata.progess = level;
         }
-
 
         if (evendata.progess < evendata.CompletionGoal)
         {

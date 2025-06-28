@@ -1,6 +1,7 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -94,22 +95,38 @@ public class CanvasMain : UICanvas
     }
     public void ActiveEvent()
     {
-        if (eventItems.Count < 0)
+        if (eventItems.Count == 0)
         {
+            EventItem prefab = Resources.Load<EventItem>(Constants.EVENT_ITEM_PATH);
             for (int i = 0; i < gameEvent.events.Count; i++)
             {
-                EventItem prefab = Resources.Load<EventItem>(Constants.GAME_EVENT_PATH);
                 EventItem even = Instantiate(prefab, parentItemEvent);
                 even.SetEventData(gameEvent.events[i]);
+                even.SetGameSupportBonus(gameSupportBonus);
                 even.UpdateUIEvent();
+                eventItems.Add(even);
             }
         }
-        else
+        if(eventItems.Count > 0) 
         {
             for (int i = 0; i < eventItems.Count; i++)
             {
                 eventItems[i].UpdateUIEvent();
             }
+        }
+        List<Transform> eventItemTransforms = new List<Transform>();
+
+        foreach (Transform child in parentItemEvent)
+        {
+            if (child.GetComponent<EventItem>() != null)
+            {
+                eventItemTransforms.Add(child);
+            }
+        }
+        eventItemTransforms = eventItemTransforms.OrderBy(x => x.GetComponent<EventItem>().eStateEvent).ToList();
+        for (int i = 0; i < eventItemTransforms.Count; i++)
+        {
+            eventItemTransforms[i].SetSiblingIndex(i);
         }
     }
 

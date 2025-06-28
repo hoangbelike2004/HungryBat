@@ -19,7 +19,7 @@ public class GameController : Singleton<GameController>
     private BoardController m_boarcontroll;
     private CanvasGamePlay m_canvasGamePlay;
     private CanvasMain m_canvasMain;
-    private int star, numbermove, sumItemAmout, score,currentProgess;
+    private int star, numbermove, sumItemAmout, score,currentProgess,hearts;
     private float completionrate;
     private bool isCoroutineRunning;
     private List<int> itemScore;
@@ -229,6 +229,15 @@ public class GameController : Singleton<GameController>
     public int GetCoin()
     {
         return this.coin;
+    }
+
+    public void SetHeart(int heart)
+    {
+        this.hearts += heart; 
+    }
+    public int GetHeart()
+    {
+        return this.hearts;
     }
 
     public int GetCurrentProgess()

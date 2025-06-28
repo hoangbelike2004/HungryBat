@@ -17,8 +17,8 @@ public enum eEventType
 }
 public enum eStateEvent
 {
-    UNFINISHED,
     FINISHED,
+    UNFINISHED,
     REWARDCLAIMED,
 }
 [System.Serializable]

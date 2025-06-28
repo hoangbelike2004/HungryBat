@@ -13,45 +13,52 @@ MonoBehaviour:
   m_Name: GameEvent
   m_EditorClassIdentifier: 
   events:
-  - description: 
-    typeAward: 0
+  - description: Tham gia man choi dau tien
+    typeAward: 3
     eventType: 0
     stateEvent: 0
-    CompletionGoal: 0
-    progess: 0
+    CompletionGoal: 1
+    progess: 1
+    numberofReward: 100
+  - description: Tham gia 2 man choi
+    typeAward: 3
+    eventType: 0
+    stateEvent: 1
+    CompletionGoal: 3
+    progess: 1
+    numberofReward: 250
+  - description: 
+    typeAward: 4
+    eventType: 0
+    stateEvent: 1
+    CompletionGoal: 3
+    progess: 1
+    numberofReward: 3
   - description: 
     typeAward: 0
-    eventType: 0
+    eventType: 1
     stateEvent: 0
-    CompletionGoal: 0
-    progess: 0
+    CompletionGoal: 1
+    progess: 3
+    numberofReward: 1
   - description: 
-    typeAward: 0
-    eventType: 0
+    typeAward: 1
+    eventType: 1
     stateEvent: 0
-    CompletionGoal: 0
-    progess: 0
+    CompletionGoal: 2
+    progess: 3
+    numberofReward: 1
   - description: 
-    typeAward: 0
-    eventType: 0
+    typeAward: 2
+    eventType: 1
     stateEvent: 0
-    CompletionGoal: 0
-    progess: 0
+    CompletionGoal: 3
+    progess: 3
+    numberofReward: 1
   - description: 
-    typeAward: 0
-    eventType: 0
-    stateEvent: 0
-    CompletionGoal: 0
-    progess: 0
-  - description: 
-    typeAward: 0
-    eventType: 0
-    stateEvent: 0
-    CompletionGoal: 0
-    progess: 0
-  - description: 
-    typeAward: 0
-    eventType: 0
-    stateEvent: 0
-    CompletionGoal: 0
-    progess: 0
+    typeAward: 1
+    eventType: 1
+    stateEvent: 1
+    CompletionGoal: 4
+    progess: 3
+    numberofReward: 1

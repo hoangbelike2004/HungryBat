@@ -7,6 +7,7 @@ public static class Constants
     public const string GAME_SUPPORT_BONUS_PATH = "Prefabs/GameSupportBonus";
     public const string GAME_EVENT_PATH= "Prefabs/GameEvent";
     public const string LEVEL_ITEM_PATH = "UI/LevelItem";
+    public const string EVENT_ITEM_PATH = "Prefabs/ItemEvent";
 
     public const string PREFAB_CELL_BACKGROUND0 = "Prefabs/BG0";
     public const string PREFAB_CELL_BACKGROUND1 = "Prefabs/BG1";
