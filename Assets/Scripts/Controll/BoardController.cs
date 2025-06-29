@@ -30,9 +30,9 @@ public class BoardController : MonoBehaviour
 
     private bool m_gameComplete = false;
     private BonusData m_bonusData;
-    public void StartGame(LevelData level)
+    public void StartGame(LevelData level,GameSetting gamesetting)
     {
-        m_gameSettings = Resources.Load<GameSetting>(Constants.GAME_SETTINGS_PATH);
+        m_gameSettings = gamesetting;
         m_levelData = level;
         m_cam = Camera.main;
         m_board = new Board(this.transform, m_gameSettings);

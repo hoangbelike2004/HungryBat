@@ -15,7 +15,7 @@ public enum eStateMain
 public class CanvasMain : UICanvas
 {
     [SerializeField] Transform content;
-    [SerializeField] TextMeshProUGUI txtCoin;
+    [SerializeField] TextMeshProUGUI txtCoin,txtTime,txtHeart;
     [SerializeField] Button btnSetting, btnhome, btnEvent, btnShop;
     [SerializeField] GameObject[] listObject;
     [SerializeField] RectTransform[] iconRects;
@@ -129,7 +129,11 @@ public class CanvasMain : UICanvas
             eventItemTransforms[i].SetSiblingIndex(i);
         }
     }
-
+    public void UpdateTimeAndHeart(string time,int heart)
+    {
+        txtTime.text = time;
+        txtHeart.text = heart.ToString();
+    }
     public void ActiveShop()
     {
         if (buyBonusItems.Count > 0) return;

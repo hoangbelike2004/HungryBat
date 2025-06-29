@@ -17,6 +17,7 @@ MonoBehaviour:
   OriginX: -1.5
   OriginY: -3
   MatchesMin: 3
-  LevelMoves: 16
-  LevelTime: 30
   TimeForHint: 5
+  hearts: 1
+  heartMax: 5
+  MaxTimeHeart: 1

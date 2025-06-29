@@ -44,21 +44,21 @@ MonoBehaviour:
   - description: 
     typeAward: 1
     eventType: 1
-    stateEvent: 0
-    CompletionGoal: 2
+    stateEvent: 1
+    CompletionGoal: 3
     progess: 3
     numberofReward: 1
   - description: 
     typeAward: 2
     eventType: 1
-    stateEvent: 0
-    CompletionGoal: 3
+    stateEvent: 1
+    CompletionGoal: 5
     progess: 3
     numberofReward: 1
   - description: 
     typeAward: 1
     eventType: 1
     stateEvent: 1
-    CompletionGoal: 4
+    CompletionGoal: 7
     progess: 3
     numberofReward: 1

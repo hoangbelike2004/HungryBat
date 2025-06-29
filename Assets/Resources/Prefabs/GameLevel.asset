@@ -15,7 +15,7 @@ MonoBehaviour:
   levels:
   - level: 1
     levelType: 2
-    moveNumber: 10
+    moveNumber: 1
     starNumber: 3
     normalItem: 00000000
     itemAmount: 0a000000

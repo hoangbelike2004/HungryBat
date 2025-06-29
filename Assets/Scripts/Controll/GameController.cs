@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -13,28 +14,54 @@ public enum eStateGame
 public class GameController : Singleton<GameController>
 {
     public eStateGame StateGame => stateGame;
-    public int coin;
+    public int coin, ratio;
     private eStateGame stateGame;
     private LevelData _levelData;
     private BoardController m_boarcontroll;
     private CanvasGamePlay m_canvasGamePlay;
     private CanvasMain m_canvasMain;
-    private int star, numbermove, sumItemAmout, score,currentProgess,hearts;
-    private float completionrate;
+    private int star, numbermove, sumItemAmout, score, currentProgess, hearts;
+    private float completionrate, timeHeart;
     private bool isCoroutineRunning;
     private List<int> itemScore;
     private BonusData bonusdata;
     private GameSupportBonus m_gameSupportBonus;
     private GameEvent m_gameevent;
-    private void Start()
+    private GameSetting m_gameSetting;
+    private TimeSpan datecurrent;
+    private void Awake()
     {
-        m_canvasMain = UIManager.Instance.OpenUI<CanvasMain>();
+        m_gameSetting = Resources.Load<GameSetting>(Constants.GAME_SETTINGS_PATH);
         m_gameSupportBonus = Resources.Load<GameSupportBonus>(Constants.GAME_SUPPORT_BONUS_PATH);
         m_gameevent = Resources.Load<GameEvent>(Constants.GAME_EVENT_PATH);
+    }
+    private void Start()
+    {
+        GetHeartData();
+        m_canvasMain = UIManager.Instance.OpenUI<CanvasMain>();
         m_canvasMain.SetGameSupportBonus(m_gameSupportBonus);
         m_canvasMain.SetGameEvent(m_gameevent);
         m_canvasMain.SetState(eStateMain.HOME);
         m_canvasMain.UpdateCoin(coin);
+    }
+    public void FixedUpdate()
+    {
+        if (m_gameSetting.hearts < m_gameSetting.heartMax)
+        {
+            timeHeart += Time.fixedDeltaTime * ratio;
+            TimeSpan timespan = TimeSpan.FromSeconds(timeHeart);
+            string strTime = string.Format("{0:D2}:{1:D2}", timespan.Minutes, timespan.Seconds);
+            m_canvasMain.UpdateTimeAndHeart(strTime, m_gameSetting.hearts);
+            if (timespan.TotalMinutes == m_gameSetting.MaxTimeHeart)
+            {
+                m_gameSetting.hearts++;
+            }
+        }
+        else
+        {
+            timeHeart = 0;
+            m_canvasMain.UpdateTimeAndHeart("Full", m_gameSetting.hearts);
+        }
     }
     public void Update()
     {
@@ -98,18 +125,17 @@ public class GameController : Singleton<GameController>
             sumItemAmout += _levelData.itemAmount[i];
         }
         m_boarcontroll = new GameObject("BoardController").AddComponent<BoardController>();
-        m_boarcontroll.StartGame(_levelData);
+        m_boarcontroll.StartGame(_levelData, m_gameSetting);
     }
     public void GameComplete()
     {
-        Debug.Log(1);
         if (star > _levelData.starNumber)
         {
             _levelData.starNumber = star;
             if (_levelData.starNumber == 3)
             {
                 _levelData.levelType = eStateLevel.COMPLETE;
-                if(_levelData.coin > 0)
+                if (_levelData.coin > 0)
                 {
                     coin += _levelData.coin;
                     _levelData.coin = 0;
@@ -178,8 +204,12 @@ public class GameController : Singleton<GameController>
                 }
             }
         }
+        if (star < 3)
+        {
+            m_gameSetting.hearts--;
+        }
         CanvasComplete completeUi = UIManager.Instance.OpenUI<CanvasComplete>();
-        completeUi.OnActive(score, _levelData.starNumber,cointmp);
+        completeUi.OnActive(score, _levelData.starNumber, cointmp);
         completeUi.SetLevelData(_levelData);
         currentProgess++;
     }
@@ -233,7 +263,7 @@ public class GameController : Singleton<GameController>
 
     public void SetHeart(int heart)
     {
-        this.hearts += heart; 
+        this.hearts += heart;
     }
     public int GetHeart()
     {
@@ -243,6 +273,32 @@ public class GameController : Singleton<GameController>
     public int GetCurrentProgess()
     {
         return currentProgess;
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (m_gameSetting.hearts < m_gameSetting.heartMax)
+        {
+            DateTime date = DateTime.Now;
+            PlayerPrefs.SetString("datequit", date.ToString());
+            PlayerPrefs.SetFloat("timeheart", timeHeart);//thoi gian dang dem khi thoat game
+        }
+    }
+
+    //GET DATALOCAL
+    public void GetHeartData()
+    {
+        if (PlayerPrefs.HasKey("datequit"))
+        {
+            DateTime datequit = DateTime.Parse(PlayerPrefs.GetString("datequit"));
+            TimeSpan timepassed = DateTime.Now - datequit;//thời gian đã thoát game
+            TimeSpan timeheartquit = TimeSpan.FromSeconds(PlayerPrefs.GetFloat("timeheart"));//thoi gian dang dem khi thoat
+            timepassed = timepassed + timeheartquit;
+            int amoutHeart = (int)(timepassed.TotalMinutes / m_gameSetting.MaxTimeHeart);//luot choi nhan duoc khi thoat
+            m_gameSetting.hearts = m_gameSetting.hearts + amoutHeart;
+            m_gameSetting.hearts = Mathf.Clamp(m_gameSetting.hearts, 0, m_gameSetting.heartMax);
+            timeHeart = (float)(timepassed.TotalSeconds % (m_gameSetting.MaxTimeHeart * 60));
+        }
     }
     private void OnEnable()
     {

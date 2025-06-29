@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,14 +9,22 @@ public class GameSetting : ScriptableObject
     public int BoardSizeX = 5;
 
     public int BoardSizeY = 5;
+
     public float OriginX = -2.5f;
+
     public float OriginY = -2.5f;
 
     public int MatchesMin = 3;
 
-    public int LevelMoves = 16;
-
-    public float LevelTime = 30f;
-
     public float TimeForHint = 5f;
+
+    public int hearts = 2;
+
+    public int heartMax = 5;
+
+    public float MaxTimeHeart = 5;
+
+    public float volumeMusic = 1;
+
+    public float volumeSound = 1;
 }
