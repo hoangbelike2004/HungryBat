@@ -428,16 +428,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clips:
-  - AudioClip: {fileID: 8300000, guid: 928389bfab1bd4589b4d82fb3fac68a1, type: 3}
-    AudioType: 0
-  - AudioClip: {fileID: 8300000, guid: 3d5675187c0e842a18163767eed3a98a, type: 3}
-    AudioType: 1
-  - AudioClip: {fileID: 8300000, guid: 27fdb3901aa5a4c73be687a0257e25fe, type: 3}
-    AudioType: 2
   - AudioClip: {fileID: 0}
+    AudioType: 0
+  - AudioClip: {fileID: 8300000, guid: 928389bfab1bd4589b4d82fb3fac68a1, type: 3}
+    AudioType: 1
+  - AudioClip: {fileID: 8300000, guid: 3d5675187c0e842a18163767eed3a98a, type: 3}
+    AudioType: 2
+  - AudioClip: {fileID: 8300000, guid: 27fdb3901aa5a4c73be687a0257e25fe, type: 3}
     AudioType: 3
   - AudioClip: {fileID: 0}
     AudioType: 4
+  - AudioClip: {fileID: 0}
+    AudioType: 5
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
