@@ -15,8 +15,9 @@ public class BuyBonusItem : MonoBehaviour
     {
         btnBuy.onClick.AddListener(() =>
         {
+            SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
             //kiểm tra và mua item;
-            if(GameController.Instance.GetCoin() < bonusdata.price)
+            if (GameController.Instance.GetCoin() < bonusdata.price)
             {
                 canvasmain.ActiveNotification(false);
             }

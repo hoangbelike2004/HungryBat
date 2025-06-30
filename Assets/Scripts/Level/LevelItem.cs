@@ -16,7 +16,8 @@ public class LevelItem : MonoBehaviour
     {
         btn.onClick.AddListener(() =>
         {
-            if(GameController.Instance.GetHeart() > 0)
+            SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
+            if (GameController.Instance.GetHeart() > 0)
             {
                 SelectLevelUI sel = UIManager.Instance.OpenUI<SelectLevelUI>();
                 sel.SetLevelData(levelData);

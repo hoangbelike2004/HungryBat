@@ -8,9 +8,9 @@ using UnityEngine.UI;
 
 public class CanvasComplete : UICanvas
 {
-    [SerializeField] Button btnHome,btnReload;
-    [SerializeField] TextMeshProUGUI txtScore,txtCoin;
-    [SerializeField] RectTransform box,glow;
+    [SerializeField] Button btnHome, btnReload;
+    [SerializeField] TextMeshProUGUI txtScore, txtCoin;
+    [SerializeField] RectTransform box, glow;
     [SerializeField] Image overlay;
     [SerializeField] RectTransform[] visualstars;
     [SerializeField] LevelData levelData;
@@ -20,15 +20,25 @@ public class CanvasComplete : UICanvas
         btnReload.onClick.AddListener(ReLoadGame);
     }
 
-    public void OnActive(int score,int star,int coin)
+    public void OnActive(int score, int star, int coin)
     {
         overlay.DOFade(0.5f, 0.1f);
         glow.DOScale(1f, 0.3f);
-        glow.DOScale(1.1f, 1f).SetLoops(-1,LoopType.Yoyo);
+        glow.DOScale(1.1f, 1f).SetLoops(-1, LoopType.Yoyo);
         box.DOScale(1f, 0.3f).SetEase(Ease.InCubic).OnComplete(() =>
         {
-            txtScore.text = score.ToString();
-            txtCoin.text = coin.ToString();
+            int startvalue = 0;
+            int startvalue2 = 0;
+            DOTween.To(() => startvalue2, x =>
+            {
+                startvalue = x;
+                txtScore.text = x.ToString();
+            }, coin, 1f).SetEase(Ease.Linear);
+            DOTween.To(() => startvalue, x =>
+            {
+                startvalue = x;
+                txtCoin.text = x.ToString();
+            }, coin, 1f).SetEase(Ease.Linear);
             Sequence sq = DOTween.Sequence();
             for (int i = 0; i < star; i++)
             {
@@ -40,6 +50,7 @@ public class CanvasComplete : UICanvas
 
     public void OnDeactive()
     {
+        SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
         overlay.DOFade(0.01f, 0.2f);
         glow.DOScale(0.1f, 0.2f);
         box.DOScale(0.1f, 0.2f).SetEase(Ease.InCubic).OnComplete(() =>
@@ -60,11 +71,12 @@ public class CanvasComplete : UICanvas
                 GameController.Instance.SetState(eStateGame.MAIN_MENU);
                 GameController.Instance.ChangeState();
             });
-            
+
         });
     }
     public void ReLoadGame()
     {
+        SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
         Sequence seq = DOTween.Sequence();
         for (int i = 0; i < visualstars.Length; i++)
         {

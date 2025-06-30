@@ -46,18 +46,22 @@ public class CanvasMain : UICanvas
         {
             CanvasSetting setting = UIManager.Instance.OpenUI<CanvasSetting>();
             setting.Active();
+            SoundManager.Instance.PlaySound(eAudioType.SETTING_CLIP);
         });
         btnhome.onClick.AddListener(() =>
         {
             SetState(eStateMain.HOME);
+            SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
         });
         btnEvent.onClick.AddListener(() =>
         {
             SetState(eStateMain.EVENT);
+            SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
         });
         btnShop.onClick.AddListener(() =>
         {
             SetState(eStateMain.SHOP);
+            SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
         });
         ChangeState();
     }

@@ -26,6 +26,7 @@ public class CanvasOutofLives :UICanvas
 
     public void Deactive()
     {
+        SoundManager.Instance.PlaySound(eAudioType.CLOSE_CLIP);
         box.DOAnchorPos(new Vector2(0, 1700), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
         {
             overlay.DOFade(0.1f, 0.1f).OnComplete(() =>

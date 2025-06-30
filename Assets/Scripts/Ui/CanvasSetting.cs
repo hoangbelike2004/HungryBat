@@ -28,11 +28,13 @@ public class CanvasSetting : UICanvas
     {
         btnClose.onClick.AddListener(() =>
         {
+            SoundManager.Instance.PlaySound(eAudioType.CLOSE_CLIP);
             DeActive();
         });
         btnQuit.onClick.AddListener(() =>
         {
-            if(GameController.Instance.StateGame == eStateGame.STARTED)
+            SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
+            if (GameController.Instance.StateGame == eStateGame.STARTED)
             {
                 box.DOAnchorPos(new Vector2(0, 1700), 0f);
                 overlay.DOFade(0.1f, 0f);
@@ -60,6 +62,7 @@ public class CanvasSetting : UICanvas
     }
     public void ActiveMusic()
     {
+        SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
         btnActiveMusic.gameObject.SetActive(false);
         btnDeactiveMucsic.gameObject.SetActive(true);
         sliderMusic.value = 1;
@@ -67,6 +70,7 @@ public class CanvasSetting : UICanvas
     }
     public void DeActiveMusic()
     {
+        SoundManager.Instance.PlaySound(eAudioType.CLOSE_CLIP);
         btnDeactiveMucsic.gameObject.SetActive(false);
         btnActiveMusic.gameObject.SetActive(true);
         sliderMusic.value = 0;
@@ -90,6 +94,7 @@ public class CanvasSetting : UICanvas
 
     public void ActiveSound()
     {
+        SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
         btnActiveSound.gameObject.SetActive(false);
         btnDeactiveSound.gameObject.SetActive(true);
         sliderSound.value = 1;
@@ -97,6 +102,7 @@ public class CanvasSetting : UICanvas
     }
     public void DeActiveSound()
     {
+        SoundManager.Instance.PlaySound(eAudioType.CLOSE_CLIP);
         btnDeactiveSound.gameObject.SetActive(false);
         btnActiveSound.gameObject.SetActive(true);
         sliderSound.value = 0;

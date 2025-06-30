@@ -22,6 +22,7 @@ public class EventItem : MonoBehaviour
 
     public void GetReward()
     {
+        SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
         evendata.stateEvent = eStateEvent.REWARDCLAIMED;
         switch (evendata.typeAward)
         {

@@ -22,6 +22,7 @@ public class CanvasGamePlay : UICanvas
         {
             CanvasSetting setting = UIManager.Instance.OpenUI<CanvasSetting>();
             setting.Active();
+            SoundManager.Instance.PlaySound(eAudioType.SETTING_CLIP);
         });
     }
 
