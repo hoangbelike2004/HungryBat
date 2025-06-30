@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class LevelController : MonoBehaviour
 {
-    [SerializeField] GameLevel GameLevel;
     [SerializeField] Transform root;
+    private GameLevel GameLevel;
     List<LevelItem> leveltimes;
-    public void Init(Transform r)
+    public void CreateLevel(Transform r, GameLevel gamelevel)
     {
         root = r;
+        this.GameLevel = gamelevel;
     }
     private void Start()
     {

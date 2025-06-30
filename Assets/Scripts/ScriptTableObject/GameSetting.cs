@@ -27,4 +27,10 @@ public class GameSetting : ScriptableObject
     public float volumeMusic = 1;
 
     public float volumeSound = 1;
+
+    public void LoadDataSetting(float music,float sound)
+    {
+        this.volumeMusic = music;
+        this.volumeSound = sound;
+    }
 }

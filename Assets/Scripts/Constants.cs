@@ -3,13 +3,19 @@
 public static class Constants
 {
     public const string GAME_SETTINGS_PATH = "Prefabs/gamesettings";
+
     public const string GAME_LEVEL_PATH = "Prefabs/GameLevel";
+
     public const string GAME_SUPPORT_BONUS_PATH = "Prefabs/GameSupportBonus";
+
     public const string GAME_EVENT_PATH= "Prefabs/GameEvent";
+
     public const string LEVEL_ITEM_PATH = "UI/LevelItem";
+
     public const string EVENT_ITEM_PATH = "Prefabs/ItemEvent";
 
     public const string PREFAB_CELL_BACKGROUND0 = "Prefabs/BG0";
+
     public const string PREFAB_CELL_BACKGROUND1 = "Prefabs/BG1";
 
     public const string PREFAB_NORMAL_TYPE_ONE = "Prefabs/Apple";
@@ -31,8 +37,11 @@ public static class Constants
     public const string PREFAB_BONUS_VERTICAL = "Prefabs/Vertical";
 
     public const string PREFAB_BONUS_BOMB = "Prefabs/Bomb";
+
     public const string PREFAB_BONUS_LIGHTNING = "Prefabs/Lightning";
+
     public const string PREFAB_BONUS_POTION = "Prefabs/Potion";
+
     public const string PREFAB_NORMAL_TYPE_ONE_UI = "UI/appleUI";
 
     public const string PREFAB_NORMAL_TYPE_TWO_UI = "UI/bananaUI";
@@ -46,6 +55,7 @@ public static class Constants
     public const string PREFAB_NORMAL_TYPE_SIX_UI = "UI/pearUI";
 
     public const string PREFAB_NORMAL_TYPE_SEVEN_UI = "UI/strawberryUI";
+
     public const string PREFAB_NORMAL_TYPE_ONE_GOAL = "UIGoal/FruitGoalApple";
 
     public const string PREFAB_NORMAL_TYPE_TWO_GOAL = "UIGoal/FruitGoalBanana";
@@ -59,6 +69,12 @@ public static class Constants
     public const string PREFAB_NORMAL_TYPE_SIX_GOAL = "UIGoal/FruitGoalPear";
 
     public const string PREFAB_NORMAL_TYPE_SEVEN_GOAL = "UIGoal/FruitGoalStrawberry";
+
     public const string PREFAB_PLUS_GOAL = "UIGoal/Plus";
+
     public const string PREFAB_ITEM_SHOP = "Prefabs/ItemShop";
+
+    public const string KEY_DATA_PLAYER = "DATAPLAYER";
+
+    public const string KEY_LATE_LOGIN_DATE = "LATELOGINDATE";
 }

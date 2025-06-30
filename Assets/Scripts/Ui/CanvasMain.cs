@@ -20,6 +20,7 @@ public class CanvasMain : UICanvas
     [SerializeField] GameObject[] listObject;
     [SerializeField] RectTransform[] iconRects;
     [SerializeField] int offsetYIcon;
+    private GameLevel gamelevel;
 
 
     [Header("SHOP")]
@@ -68,6 +69,10 @@ public class CanvasMain : UICanvas
             ChangeState();
         }
     }
+    public void SetGameLevel(GameLevel level)
+    {
+        this.gamelevel = level;
+    }
     public void ChangeState()
     {
         listObject[(int)cunrentState].SetActive(true);
@@ -91,7 +96,7 @@ public class CanvasMain : UICanvas
     }
     public void ActiveHome()
     {
-        m_levelctr.Init(content);
+        m_levelctr.CreateLevel(content,gamelevel);
     }
     public void ActiveEvent()
     {

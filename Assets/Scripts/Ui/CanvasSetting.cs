@@ -40,6 +40,7 @@ public class CanvasSetting : UICanvas
                 UIManager.Instance.CloseAll();
                 GameController.Instance.SetState(eStateGame.MAIN_MENU);
                 GameController.Instance.ChangeState();
+                GameController.Instance.SetHearts();
             }
             else
             {
@@ -120,6 +121,10 @@ public class CanvasSetting : UICanvas
         overlay.gameObject.SetActive(true);
         overlay.DOFade(0.5f, 0.1f);
         box.DOAnchorPos(new Vector2(0, 0), 0.3f).SetEase(Ease.OutBounce);
+        sliderMusic.value = gameSetting.volumeMusic;
+        sliderSound.value = gameSetting.volumeSound;
+        SetVolumSilderMusic();
+        SetVolumSilderSound();
     }
     public void DeActive()
     {

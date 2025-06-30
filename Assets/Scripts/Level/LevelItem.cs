@@ -16,9 +16,18 @@ public class LevelItem : MonoBehaviour
     {
         btn.onClick.AddListener(() =>
         {
-            SelectLevelUI sel = UIManager.Instance.OpenUI<SelectLevelUI>();
-            sel.SetLevelData(levelData);
-            sel.Active();
+            if(GameController.Instance.GetHeart() > 0)
+            {
+                SelectLevelUI sel = UIManager.Instance.OpenUI<SelectLevelUI>();
+                sel.SetLevelData(levelData);
+                sel.Active();
+            }
+            else
+            {
+                CanvasOutofLives cv = UIManager.Instance.OpenUI<CanvasOutofLives>();
+                cv.Active();
+                GameController.Instance.SetCanvasOutOfLives(cv);
+            }
         });
     }
     public void SetData(LevelData levelData)

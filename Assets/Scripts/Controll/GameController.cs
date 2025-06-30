@@ -20,6 +20,7 @@ public class GameController : Singleton<GameController>
     private BoardController m_boarcontroll;
     private CanvasGamePlay m_canvasGamePlay;
     private CanvasMain m_canvasMain;
+    private CanvasOutofLives m_canvasOutofLives;
     private int star, numbermove, sumItemAmout, score, currentProgess, hearts;
     private float completionrate, timeHeart;
     private bool isCoroutineRunning;
@@ -28,19 +29,22 @@ public class GameController : Singleton<GameController>
     private GameSupportBonus m_gameSupportBonus;
     private GameEvent m_gameevent;
     private GameSetting m_gameSetting;
-    private TimeSpan datecurrent;
+    private GameLevel m_gamelevel;
     private void Awake()
     {
         m_gameSetting = Resources.Load<GameSetting>(Constants.GAME_SETTINGS_PATH);
         m_gameSupportBonus = Resources.Load<GameSupportBonus>(Constants.GAME_SUPPORT_BONUS_PATH);
         m_gameevent = Resources.Load<GameEvent>(Constants.GAME_EVENT_PATH);
+        m_gamelevel = Resources.Load<GameLevel>(Constants.GAME_LEVEL_PATH);
     }
     private void Start()
     {
-        GetHeartData();
+        LoadDataPlayer();
+        LoadHeartData();
         m_canvasMain = UIManager.Instance.OpenUI<CanvasMain>();
         m_canvasMain.SetGameSupportBonus(m_gameSupportBonus);
         m_canvasMain.SetGameEvent(m_gameevent);
+        m_canvasMain.SetGameLevel(m_gamelevel);
         m_canvasMain.SetState(eStateMain.HOME);
         m_canvasMain.UpdateCoin(coin);
     }
@@ -52,6 +56,10 @@ public class GameController : Singleton<GameController>
             TimeSpan timespan = TimeSpan.FromSeconds(timeHeart);
             string strTime = string.Format("{0:D2}:{1:D2}", timespan.Minutes, timespan.Seconds);
             m_canvasMain.UpdateTimeAndHeart(strTime, m_gameSetting.hearts);
+            if(m_canvasOutofLives != null)
+            {
+                m_canvasOutofLives.UpdateUI(m_gameSetting.hearts,strTime);
+            }
             if (timespan.TotalMinutes == m_gameSetting.MaxTimeHeart)
             {
                 m_gameSetting.hearts++;
@@ -61,6 +69,10 @@ public class GameController : Singleton<GameController>
         {
             timeHeart = 0;
             m_canvasMain.UpdateTimeAndHeart("Full", m_gameSetting.hearts);
+            if (m_canvasOutofLives != null)
+            {
+                m_canvasOutofLives.UpdateUI(m_gameSetting.hearts, "Full");
+            }
         }
     }
     public void Update()
@@ -209,7 +221,7 @@ public class GameController : Singleton<GameController>
             m_gameSetting.hearts--;
         }
         CanvasComplete completeUi = UIManager.Instance.OpenUI<CanvasComplete>();
-        completeUi.OnActive(score, _levelData.starNumber, cointmp);
+        completeUi.OnActive(score, star, cointmp);
         completeUi.SetLevelData(_levelData);
         currentProgess++;
     }
@@ -260,21 +272,23 @@ public class GameController : Singleton<GameController>
     {
         return this.coin;
     }
-
-    public void SetHeart(int heart)
+    public void SetHearts()
     {
-        this.hearts += heart;
+        m_gameSetting.hearts -= 1;
     }
     public int GetHeart()
     {
-        return this.hearts;
+        return m_gameSetting.hearts;
     }
 
     public int GetCurrentProgess()
     {
         return currentProgess;
     }
-
+    public void SetCanvasOutOfLives(CanvasOutofLives canvas)
+    {
+        m_canvasOutofLives = canvas;
+    }
     private void OnApplicationQuit()
     {
         if (m_gameSetting.hearts < m_gameSetting.heartMax)
@@ -283,10 +297,66 @@ public class GameController : Singleton<GameController>
             PlayerPrefs.SetString("datequit", date.ToString());
             PlayerPrefs.SetFloat("timeheart", timeHeart);//thoi gian dang dem khi thoat game
         }
+        SaveDataPlayer();
     }
 
-    //GET DATALOCAL
-    public void GetHeartData()
+    //SAVE AND LOAD DATALOCAL
+    public void SaveDataPlayer()
+    {
+        LevelData level = new LevelData();
+        for (int i = 0; i < m_gamelevel.levels.Count; i++)
+        {
+            if (m_gamelevel.levels[i].levelType == eStateLevel.OPEN)
+            {
+                level = m_gamelevel.levels[i];
+                break;
+            }
+        }
+        List<int> amoutBonus = new List<int>();
+        for (int i = 0; i < m_gameSupportBonus.bonusDatas.Count; i++)
+        {
+            amoutBonus.Add(m_gameSupportBonus.bonusDatas[i].amout);
+        }
+        DataUtils.SaveData(m_gameSetting.hearts, coin, level, currentProgess, m_gameevent.events
+            , amoutBonus, m_gameSetting.volumeMusic, m_gameSetting.volumeSound);
+        DateTime date = DateTime.Now;
+        PlayerPrefs.SetString(Constants.KEY_LATE_LOGIN_DATE,date.ToString("yyyy-MM-dd"));
+    }
+
+    public void LoadDataPlayer()
+    {
+        PlayerData playerdata = DataUtils.LoadData();
+        if (playerdata != null)
+        {
+            //loadlevel
+            LevelData leveldata = playerdata.currentlevel;
+            m_gamelevel.LoadDataLevel(leveldata);
+            //loadItemBonus
+            m_gameSupportBonus.LoadDataItem(playerdata.AmoutItemBonus);
+            //loadsetting
+            m_gameSetting.LoadDataSetting(playerdata.VolumeMusic,playerdata.volumeSound);
+            //loadevent
+            if (PlayerPrefs.HasKey(Constants.KEY_LATE_LOGIN_DATE))
+            {
+                string strDate = PlayerPrefs.GetString(Constants.KEY_LATE_LOGIN_DATE);
+                DateTime latedate = DateTime.Parse(strDate);
+                DateTime today = DateTime.Now;
+                if (today > latedate)
+                {
+                    currentProgess = 0;
+                }
+                else
+                {
+                    currentProgess = playerdata.currentProgess;
+                }
+            }
+            m_gameevent.LoadDataEvent(playerdata.events);
+            //lOADCOIN
+            coin = playerdata.coin;
+
+        }
+    }
+    public void LoadHeartData()
     {
         if (PlayerPrefs.HasKey("datequit"))
         {

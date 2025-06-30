@@ -18,6 +18,7 @@ public class SelectLevelUI : UICanvas
     [SerializeField] GameSupportBonus gameSupport;
     [SerializeField] Transform parent;
     [SerializeField] List<BonusUI> bonUIs;
+    [SerializeField] GameSetting gamesetting;
     private LevelData LevelData;
     private void Start()
     {
@@ -88,7 +89,7 @@ public class SelectLevelUI : UICanvas
     }
     public void SetItemSupport()
     {
-        for(int i = 0;i < gameSupport.bonusDatas.Count; i++)
+        for (int i = 0; i < gameSupport.bonusDatas.Count; i++)
         {
             bonUIs[i].SetBonusData(gameSupport.bonusDatas[i]);
             bonUIs[i].UpdateUI();
