@@ -166,8 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2fdf52319a715542b5a3067cfc22ade, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coin: 9999
-  ratio: 1
+  coin: 1000
+  currentProgess: 0
 --- !u!1 &88814424
 GameObject:
   m_ObjectHideFlags: 0
@@ -383,6 +383,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &344812454
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 344812455}
+  m_Layer: 0
+  m_Name: Music
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &344812455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344812454}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1043186052}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &427737377
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,18 +459,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clips:
-  - AudioClip: {fileID: 0}
-    AudioType: 0
   - AudioClip: {fileID: 8300000, guid: 928389bfab1bd4589b4d82fb3fac68a1, type: 3}
-    AudioType: 1
+    AudioType: 0
   - AudioClip: {fileID: 8300000, guid: 3d5675187c0e842a18163767eed3a98a, type: 3}
-    AudioType: 2
+    AudioType: 1
   - AudioClip: {fileID: 8300000, guid: 27fdb3901aa5a4c73be687a0257e25fe, type: 3}
+    AudioType: 2
+  - AudioClip: {fileID: 8300000, guid: d46323e22e74e46baa241cbf48c85671, type: 3}
     AudioType: 3
-  - AudioClip: {fileID: 0}
+  - AudioClip: {fileID: 8300000, guid: c9c0619d7f830624a9dee74de4b4536c, type: 3}
     AudioType: 4
-  - AudioClip: {fileID: 0}
+  - AudioClip: {fileID: 8300000, guid: 01d5ae0cfcbec4c5e81fd5d552af2e84, type: 3}
     AudioType: 5
+  - AudioClip: {fileID: 8300000, guid: b9af7bbd676ec443bb7cee6b03b0240d, type: 3}
+    AudioType: 6
+  - AudioClip: {fileID: 8300000, guid: 637d1b221cd934e0e8b74876d47e2609, type: 3}
+    AudioType: 7
+  - AudioClip: {fileID: 8300000, guid: 3a5b46a512b09b348a587ae7d3377ed4, type: 3}
+    AudioType: 8
+  - AudioClip: {fileID: 8300000, guid: 9fcd727ac0a07a04ca442df5195c4f3b, type: 3}
+    AudioType: 9
+  - AudioClip: {fileID: 8300000, guid: d6945231be24c7240a281458fc849e1f, type: 3}
+    AudioType: 12
+  - AudioClip: {fileID: 8300000, guid: 76adc3bada8ddff4bbd042635fed2f7d, type: 3}
+    AudioType: 11
+  - AudioClip: {fileID: 8300000, guid: 7478151cf36724a7dada558f746c3633, type: 3}
+    AudioType: 10
+  - AudioClip: {fileID: 8300000, guid: b9eff218e132a4e76be78840eca96fb2, type: 3}
+    AudioType: 13
+  - AudioClip: {fileID: 8300000, guid: 7e26c9daf4c32483b9c2790e662d3f1b, type: 3}
+    AudioType: 14
+  - AudioClip: {fileID: 8300000, guid: 7c47b20bb9874304a809dc5580d403ba, type: 3}
+    AudioType: 15
+  - AudioClip: {fileID: 8300000, guid: c91fcf414acc0344cb03b13996f1bf3b, type: 3}
+    AudioType: 16
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,6 +616,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 139897272}
+  - {fileID: 344812455}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1043186053
@@ -581,6 +635,9 @@ MonoBehaviour:
   - amount: 10
     prefab: {fileID: 1446150959470608237, guid: e82f34b2a9b96ac42b1368f16b037ab0, type: 3}
     parent: {fileID: 139897272}
+  - amount: 2
+    prefab: {fileID: 1446150959470608237, guid: 621d667f334655140ab74b1cad1a3114, type: 3}
+    parent: {fileID: 344812455}
 --- !u!1 &1094097162
 GameObject:
   m_ObjectHideFlags: 0

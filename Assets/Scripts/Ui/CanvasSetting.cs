@@ -29,6 +29,7 @@ public class CanvasSetting : UICanvas
         btnClose.onClick.AddListener(() =>
         {
             SoundManager.Instance.PlaySound(eAudioType.CLOSE_CLIP);
+            SoundManager.Instance.PlaySound(eAudioType.POPUP_DEACTIVE_CLIP);
             DeActive();
         });
         btnQuit.onClick.AddListener(() =>
@@ -67,6 +68,7 @@ public class CanvasSetting : UICanvas
         btnDeactiveMucsic.gameObject.SetActive(true);
         sliderMusic.value = 1;
         gameSetting.volumeMusic = sliderMusic.value;
+        SoundManager.Instance.SetVolumeMusic(gameSetting.volumeMusic);
     }
     public void DeActiveMusic()
     {
@@ -75,10 +77,12 @@ public class CanvasSetting : UICanvas
         btnActiveMusic.gameObject.SetActive(true);
         sliderMusic.value = 0;
         gameSetting.volumeMusic = sliderMusic.value;
+        SoundManager.Instance.SetVolumeMusic(gameSetting.volumeMusic);
     }
     public void SetVolumSilderMusic()
     {
         gameSetting.volumeMusic = sliderMusic.value;
+        SoundManager.Instance.SetVolumeMusic(gameSetting.volumeMusic);
         if(sliderMusic.value > 0)
         {
             btnActiveMusic.gameObject.SetActive(false);
@@ -94,11 +98,11 @@ public class CanvasSetting : UICanvas
 
     public void ActiveSound()
     {
-        SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
         btnActiveSound.gameObject.SetActive(false);
         btnDeactiveSound.gameObject.SetActive(true);
         sliderSound.value = 1;
         gameSetting.volumeSound = sliderSound.value;
+        SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
     }
     public void DeActiveSound()
     {
@@ -124,6 +128,7 @@ public class CanvasSetting : UICanvas
     }
     public void Active()
     {
+        SoundManager.Instance.PlaySound(eAudioType.POPUP_ACTIVE_CLIP);
         overlay.gameObject.SetActive(true);
         overlay.DOFade(0.5f, 0.1f);
         box.DOAnchorPos(new Vector2(0, 0), 0.3f).SetEase(Ease.OutBounce);

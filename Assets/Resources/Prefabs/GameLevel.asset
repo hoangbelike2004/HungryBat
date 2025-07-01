@@ -15,29 +15,29 @@ MonoBehaviour:
   levels:
   - level: 1
     levelType: 2
-    moveNumber: 1
+    moveNumber: 10
     starNumber: 3
     normalItem: 00000000
     itemAmount: 0a000000
     coin: 0
   - level: 2
-    levelType: 2
+    levelType: 1
     moveNumber: 12
-    starNumber: 3
+    starNumber: 0
     normalItem: 01000000
     itemAmount: 0d000000
-    coin: 0
+    coin: 60
   - level: 3
-    levelType: 2
+    levelType: 0
     moveNumber: 14
-    starNumber: 3
+    starNumber: 0
     normalItem: 02000000
     itemAmount: 0f000000
-    coin: 0
+    coin: 70
   - level: 4
-    levelType: 1
+    levelType: 0
     moveNumber: 16
-    starNumber: 2
+    starNumber: 0
     normalItem: 03000000
     itemAmount: 14000000
     coin: 80
@@ -46,7 +46,7 @@ MonoBehaviour:
     moveNumber: 18
     starNumber: 0
     normalItem: 04000000
-    itemAmount: 01000000
+    itemAmount: 14000000
     coin: 90
   - level: 6
     levelType: 0

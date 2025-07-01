@@ -253,6 +253,7 @@ public class BoardController : MonoBehaviour
         {
             matches[i].ExplodeItem();//tao ra hieu ung bien mat cho item
         }
+        SoundManager.Instance.PlaySoundOnDelay(0.1f, eAudioType.ITEM_NORMAL_DESTROY);
 
         if (matches.Count > m_gameSettings.MatchesMin)
         {

@@ -81,6 +81,7 @@ public class BonusItem : Item
                 spr.DOFade(0.1f, 0.4f).OnComplete(() =>
                 {
                     GameObject.Destroy(View.gameObject);
+                    SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_DIRECTION);
                     SetNullView();
                     ExplodeHorizontal();
                 });
@@ -90,6 +91,7 @@ public class BonusItem : Item
                 spr.DOFade(0.1f, 0.4f).OnComplete(() =>
                 {
                     GameObject.Destroy(View.gameObject);
+                    SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_DIRECTION);
                     SetNullView();
                     ExplodeVertical();
                 });
@@ -100,6 +102,7 @@ public class BonusItem : Item
                 View.DOScale(1.4f, 0.15f).SetLoops(3, LoopType.Yoyo).OnComplete(() =>
                 {
                     GameObject.Destroy(View.gameObject);
+                    SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_BOMB);
                     SetNullView();
                     ExplodeBomb();
                 });
@@ -109,6 +112,7 @@ public class BonusItem : Item
                 spr.DOFade(0.1f, 0.4f).OnComplete(() =>
                 {
                     GameObject.Destroy(View.gameObject);
+                    SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_LIGHTNING);
                     SetNullView();
                     ExplodeLightning();
                 });
@@ -119,11 +123,11 @@ public class BonusItem : Item
                 View.DOScale(1.4f, 0.15f).SetLoops(3, LoopType.Yoyo).OnComplete(() =>
                 {
                     GameObject.Destroy(View.gameObject);
+                    SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_POTION);
                     SetNullView();
                     ExplodePotion();
                 });
                 break;
-
         }
     }
     private void ExplodeBomb()

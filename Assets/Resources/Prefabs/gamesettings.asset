@@ -18,6 +18,8 @@ MonoBehaviour:
   OriginY: -3
   MatchesMin: 3
   TimeForHint: 5
-  hearts: 1
+  hearts: 5
   heartMax: 5
-  MaxTimeHeart: 1
+  MaxTimeHeart: 10
+  volumeMusic: 1
+  volumeSound: 1

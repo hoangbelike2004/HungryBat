@@ -22,9 +22,19 @@ public class CanvasComplete : UICanvas
 
     public void OnActive(int score, int star, int coin)
     {
+        txtCoin.text = "0";
+        txtScore.text = "0";
         overlay.DOFade(0.5f, 0.1f);
         glow.DOScale(1f, 0.3f);
         glow.DOScale(1.1f, 1f).SetLoops(-1, LoopType.Yoyo);
+        if (star == 3)
+        {
+            SoundManager.Instance.PlaySound(eAudioType.COMPLETE_WIN);
+        }
+        else
+        {
+            SoundManager.Instance.PlaySound(eAudioType.COMPLETE_NOT_WIN);
+        }
         box.DOScale(1f, 0.3f).SetEase(Ease.InCubic).OnComplete(() =>
         {
             int startvalue = 0;
@@ -33,7 +43,7 @@ public class CanvasComplete : UICanvas
             {
                 startvalue = x;
                 txtScore.text = x.ToString();
-            }, coin, 1f).SetEase(Ease.Linear);
+            }, score, 1f).SetEase(Ease.Linear);
             DOTween.To(() => startvalue, x =>
             {
                 startvalue = x;
@@ -43,7 +53,11 @@ public class CanvasComplete : UICanvas
             for (int i = 0; i < star; i++)
             {
                 visualstars[i].gameObject.SetActive(true);
-                sq.Append(visualstars[i].DOScale(1f, 0.4f).SetEase(Ease.OutElastic));
+                sq.InsertCallback(sq.Duration() + 0.25f - 0.05f, () =>
+                {
+                    SoundManager.Instance.PlaySound(eAudioType.STAR);
+                });
+                sq.Append(visualstars[i].DOScale(1f, 0.4f).SetDelay(0.25f).SetEase(Ease.OutElastic));
             }
         });
     }

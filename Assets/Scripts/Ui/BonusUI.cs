@@ -20,6 +20,7 @@ public class BonusUI : MonoBehaviour
             {
                 if (GameController.Instance.StateGame == eStateGame.STARTED)
                 {
+                    SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
                     GameController.Instance.SetBonusData(bonusdata);
                 }
                 else
@@ -27,11 +28,13 @@ public class BonusUI : MonoBehaviour
                     isSelected = !isSelected;
                     if (isSelected)
                     {
+                        SoundManager.Instance.PlaySound(eAudioType.SELECT_BOUNUS_ITEM);
                         SelectionIndicator.gameObject.SetActive(true);
                         bonusdata.state = eStateBonusItem.SELECTED;
                     }
                     else
                     {
+                        SoundManager.Instance.PlaySound(eAudioType.NOT_SELECT_BONUS_ITEM);
                         SelectionIndicator.gameObject.SetActive(false);
                         bonusdata.state = eStateBonusItem.UNSELECTED;
                     }

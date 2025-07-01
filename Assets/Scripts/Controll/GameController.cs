@@ -14,14 +14,14 @@ public enum eStateGame
 public class GameController : Singleton<GameController>
 {
     public eStateGame StateGame => stateGame;
-    public int coin, ratio;
+    public int coin, currentProgess;
     private eStateGame stateGame;
     private LevelData _levelData;
     private BoardController m_boarcontroll;
     private CanvasGamePlay m_canvasGamePlay;
     private CanvasMain m_canvasMain;
     private CanvasOutofLives m_canvasOutofLives;
-    private int star, numbermove, sumItemAmout, score, currentProgess, hearts;
+    private int star, numbermove, sumItemAmout, score, hearts;
     private float completionrate, timeHeart;
     private bool isCoroutineRunning;
     private List<int> itemScore;
@@ -47,23 +47,25 @@ public class GameController : Singleton<GameController>
         m_canvasMain.SetGameLevel(m_gamelevel);
         m_canvasMain.SetState(eStateMain.HOME);
         m_canvasMain.UpdateCoin(coin);
+        SoundManager.Instance.PlaySound(eAudioType.MUCSIC_MAIN_MENU);
     }
     public void FixedUpdate()
     {
         if (m_gameSetting.hearts < m_gameSetting.heartMax)
         {
-            timeHeart += Time.fixedDeltaTime * ratio;
+            timeHeart += Time.fixedDeltaTime;
             TimeSpan timespan = TimeSpan.FromSeconds(timeHeart);
             string strTime = string.Format("{0:D2}:{1:D2}", timespan.Minutes, timespan.Seconds);
-            m_canvasMain.UpdateTimeAndHeart(strTime, m_gameSetting.hearts);
             if(m_canvasOutofLives != null)
             {
                 m_canvasOutofLives.UpdateUI(m_gameSetting.hearts,strTime);
             }
-            if (timespan.TotalMinutes == m_gameSetting.MaxTimeHeart)
+            if (timespan.TotalMinutes >= m_gameSetting.MaxTimeHeart)
             {
                 m_gameSetting.hearts++;
+                timeHeart = 0;
             }
+            m_canvasMain.UpdateTimeAndHeart(strTime, m_gameSetting.hearts);
         }
         else
         {
@@ -88,7 +90,7 @@ public class GameController : Singleton<GameController>
     }
     public void SetBonusData(BonusData data)
     {
-        if (bonusdata != null) return;
+        if (bonusdata == data) return;
         bonusdata = data;
         if (m_boarcontroll != null)
         {
@@ -123,6 +125,7 @@ public class GameController : Singleton<GameController>
     }
     public void GameStart()
     {
+        SoundManager.Instance.PlaySound(eAudioType.MUCSIC_GAME_PLAY);
         m_canvasGamePlay = UIManager.Instance.OpenUI<CanvasGamePlay>();
         m_canvasGamePlay.SetLevelData(_levelData);
         m_canvasGamePlay.UpdateUISupportBonus();
@@ -176,21 +179,22 @@ public class GameController : Singleton<GameController>
         ClearLevel();
         m_canvasMain.Open();
         m_canvasMain.UpdateLevelUi();
+        SoundManager.Instance.PlaySound(eAudioType.MUCSIC_MAIN_MENU);
     }
-    public void ReLoad()
-    {
-        score = 0;
-        completionrate = 0;
-        for (int i = 0; i < _levelData.itemAmount.Length; i++)
-        {
-            itemScore[i] = _levelData.itemAmount[i];
-        }
-        numbermove = _levelData.moveNumber;
-        itemScore = new List<int>();
-        m_boarcontroll.SetGameComplete(false);
-        m_canvasGamePlay.ResetUI();
-        Setscore(score);
-    }
+    //public void ReLoad()
+    //{
+    //    score = 0;
+    //    completionrate = 0;
+    //    for (int i = 0; i < _levelData.itemAmount.Length; i++)
+    //    {
+    //        itemScore[i] = _levelData.itemAmount[i];
+    //    }
+    //    numbermove = _levelData.moveNumber;
+    //    itemScore = new List<int>();
+    //    m_boarcontroll.SetGameComplete(false);
+    //    m_canvasGamePlay.ResetUI();
+    //    Setscore(score);
+    //}
     private IEnumerator WaitBoardController()
     {
         if (isCoroutineRunning) yield return null;
@@ -340,9 +344,10 @@ public class GameController : Singleton<GameController>
             {
                 string strDate = PlayerPrefs.GetString(Constants.KEY_LATE_LOGIN_DATE);
                 DateTime latedate = DateTime.Parse(strDate);
-                DateTime today = DateTime.Now;
+                DateTime today = DateTime.Now.Date;
                 if (today > latedate)
                 {
+                    Debug.Log(1);
                     currentProgess = 0;
                 }
                 else

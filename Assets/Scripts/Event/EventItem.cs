@@ -8,10 +8,10 @@ public class EventItem : MonoBehaviour
 {
     [SerializeField] Button btnFinshed;//button nhan thuong
     [SerializeField] Image unfinished;
-    [SerializeField] TextMeshProUGUI txtprogess;
+    [SerializeField] TextMeshProUGUI txtprogess,txtDescription;
     [SerializeField] Image received;
     [SerializeField] private GameLevel gamelevel;
-    public eStateEvent eStateEvent;
+    public eStateEvent eStateEvent => evendata.stateEvent;
     private EventData evendata;
     private GameSupportBonus gameSupportBonus;
 
@@ -42,6 +42,8 @@ public class EventItem : MonoBehaviour
                 break;
         }
         UpdateUIEvent();
+        CanvasGetReward getReward = UIManager.Instance.OpenUI<CanvasGetReward>();
+        getReward.Active(evendata.typeAward, evendata.numberofReward);
     }
     public void SetEventData(EventData eventData)
     {
@@ -54,7 +56,6 @@ public class EventItem : MonoBehaviour
     public void UpdateUIEvent()
     {
         if (evendata == null) return;
-        eStateEvent = evendata.stateEvent;
         if (evendata.stateEvent == eStateEvent.REWARDCLAIMED)
         {
             AciveState();
@@ -93,6 +94,7 @@ public class EventItem : MonoBehaviour
     public void AciveState()
     {
         if (evendata == null) return;
+        txtDescription.text = evendata.description;
         if (evendata.stateEvent == eStateEvent.UNFINISHED)
         {
             btnFinshed.gameObject.SetActive(false);

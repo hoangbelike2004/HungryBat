@@ -188,6 +188,7 @@ public class CanvasMain : UICanvas
         {
             NotificationFailRect.DOAnchorPosX(0, 0.2f).SetEase(Ease.InQuad).OnComplete(() =>
             {
+                SoundManager.Instance.PlaySoundOnDelay(1f,eAudioType.POPUP_DEACTIVE_CLIP);
                 NotificationFailRect.DOAnchorPosX(1500, 0.4f).SetEase(Ease.InQuint).SetDelay(1f).OnComplete(() =>
                 {
                     NotificationFailRect.DOAnchorPosX(-1500, 0);
@@ -198,10 +199,12 @@ public class CanvasMain : UICanvas
         }
         else
         {
-            NotificationSuccessRect.DOScale(1, 0.2f).SetEase(Ease.InElastic).OnComplete(() =>
+            NotificationSuccessRect.DOAnchorPosX(0, 0.2f).SetEase(Ease.InQuad).OnComplete(() =>
             {
-                NotificationSuccessRect.DOScale(0, 0.2f).SetEase(Ease.OutElastic).SetDelay(1f).OnComplete(() =>
+                SoundManager.Instance.PlaySoundOnDelay(1f, eAudioType.POPUP_DEACTIVE_CLIP);
+                NotificationSuccessRect.DOAnchorPosX(1500, 0.4f).SetEase(Ease.InQuint).SetDelay(1f).OnComplete(() =>
                 {
+                    NotificationSuccessRect.DOAnchorPosX(-1500, 0);
                     overlayNotification.DOFade(0f, 0f);
                     parentNotification.gameObject.SetActive(false);
                 });

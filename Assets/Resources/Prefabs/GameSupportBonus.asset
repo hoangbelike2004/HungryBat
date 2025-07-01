@@ -17,21 +17,21 @@ MonoBehaviour:
     description: Has explosive properties that help you clear large areas of the
       board.
     price: 100
-    amout: 0
+    amout: 99
     type: 3
     state: 1
     prefab: {fileID: 4399429476342232457, guid: 80b84d51db0cc064ba3f3d953b2e9627, type: 3}
   - name: Lightning
     description: Has the ability to randomly remove fruits from the board
     price: 200
-    amout: 95
+    amout: 99
     type: 4
     state: 1
     prefab: {fileID: 7104055873789592771, guid: 7f17df3f4ecbc4546bd00e83bd30a640, type: 3}
   - name: Potion
     description: Ability to remove the same type of fruit from the board.
     price: 350
-    amout: 84
+    amout: 99
     type: 5
     state: 0
     prefab: {fileID: 3113764772735171217, guid: 5c3ce249e098663428caf18f6a38c5df, type: 3}

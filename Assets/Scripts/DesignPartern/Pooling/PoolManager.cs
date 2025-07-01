@@ -28,4 +28,5 @@ public class PoolAmount
 public enum PoolType
 {
     POOL_SOUND,
+    POOL_MUSIC,
 }

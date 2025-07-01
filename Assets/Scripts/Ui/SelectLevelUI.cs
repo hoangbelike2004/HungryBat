@@ -42,6 +42,7 @@ public class SelectLevelUI : UICanvas
     }
     public void Active()
     {
+        SoundManager.Instance.PlaySound(eAudioType.POPUP_ACTIVE_CLIP);
         overlay.gameObject.SetActive(true);
         overlay.DOFade(0.5f, 0.1f);
         box.DOAnchorPos(new Vector2(0, 0), 0.3f).SetEase(Ease.OutBounce);
@@ -60,6 +61,7 @@ public class SelectLevelUI : UICanvas
     public void DeActive()
     {
         SoundManager.Instance.PlaySound(eAudioType.CLOSE_CLIP);
+        SoundManager.Instance.PlaySound(eAudioType.POPUP_DEACTIVE_CLIP);
         box.DOAnchorPos(new Vector2(0, 1700), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
         {
             overlay.DOFade(0.1f, 0.1f).OnComplete(() =>
