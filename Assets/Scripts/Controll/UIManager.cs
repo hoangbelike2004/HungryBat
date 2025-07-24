@@ -18,10 +18,6 @@ public class UIManager : Singleton<UIManager>
             canvasPrefabs.Add(canvas[i].GetType(), canvas[i]);
         }
     }
-    private void Start()
-    {
-        //UIManager.Instance.OpenUI<CanvasGamePlay>();
-    }
 
     //mo canvas
     public T OpenUI<T>() where T : UICanvas

@@ -19,7 +19,7 @@ public class GameEvent : ScriptableObject
         {
             string strDate = PlayerPrefs.GetString(Constants.KEY_LATE_LOGIN_DATE);
             DateTime latedate = DateTime.Parse(strDate);
-            DateTime today = DateTime.Now;
+            DateTime today = DateTime.Now.Date;
             if(today > latedate)
             {
                 for (int i = 0; i < eventdatas.Count; i++)
@@ -31,6 +31,24 @@ public class GameEvent : ScriptableObject
                     }
 
                 }
+            }
+        }
+    }
+    public void Check()
+    {
+        for(int i = 0; i<events.Count; i++)
+        {
+            if (events[i].CompletionGoal < 0)
+            {
+                Debug.Log("Muc tieu hoan thanh > 0 nhiem vu: "+ (i + 1));
+            }
+            if(events[i].numberofReward < 0)
+            {
+                Debug.Log("Phan thuong phai > 0 nhiem vu: "+(i + 1));
+            }
+            if (events[i].description == null)
+            {
+                Debug.LogError("Noi dung nhiem vu khong duoc de trong: " + (i + 1));
             }
         }
     }

@@ -20,6 +20,9 @@ public class CanvasMain : UICanvas
     [SerializeField] GameObject[] listObject;
     [SerializeField] RectTransform[] iconRects;
     [SerializeField] int offsetYIcon;
+    [SerializeField] List<Transform> ParentLevelItems;
+    [SerializeField] Canvas canvasLevel1,canvasHand;
+    [SerializeField] RectTransform iconhand;
     private GameLevel gamelevel;
 
 
@@ -36,10 +39,6 @@ public class CanvasMain : UICanvas
     private GameSupportBonus gameSupportBonus;
     private GameEvent gameEvent;
     private LevelController m_levelctr;
-    private void Awake()
-    {
-        m_levelctr = new GameObject("LevelController").AddComponent<LevelController>();
-    }
     private void Start()
     {
         btnSetting.onClick.AddListener(() =>
@@ -76,6 +75,7 @@ public class CanvasMain : UICanvas
     public void SetGameLevel(GameLevel level)
     {
         this.gamelevel = level;
+        m_levelctr = new GameObject("LevelController").AddComponent<LevelController>();
     }
     public void ChangeState()
     {
@@ -100,7 +100,7 @@ public class CanvasMain : UICanvas
     }
     public void ActiveHome()
     {
-        m_levelctr.CreateLevel(content,gamelevel);
+        m_levelctr.CreateLevel(gamelevel,ParentLevelItems);
     }
     public void ActiveEvent()
     {
@@ -214,5 +214,26 @@ public class CanvasMain : UICanvas
     public void UpdateCoin(int coin)
     {
         txtCoin.text = coin.ToString();
+    }
+    public void SetCanvasLevel1(int value)
+    {
+        canvasLevel1.sortingOrder = value;
+        if(value == 0)
+        {
+            canvasLevel1.overrideSorting = false;
+        }
+    }
+    public void HandTutorial(bool isTutorial)
+    {
+        if (isTutorial)
+        {
+            canvasHand.gameObject.SetActive(true);
+            iconhand.DORotate(new Vector3(0, 180, 10), 0.15f).SetLoops(-1, LoopType.Yoyo);
+        }
+        else
+        {
+            canvasHand.gameObject.SetActive(false);
+            iconhand.DOKill();
+        }
     }
 }

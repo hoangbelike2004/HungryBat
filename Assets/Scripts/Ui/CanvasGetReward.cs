@@ -22,11 +22,12 @@ public class CanvasGetReward : UICanvas
     {
         currenttype = type;
         rewards[(int)currenttype].SetActive(true);
-        txtAmout.text = amout.ToString();
+        txtAmout.text = "x"+amout.ToString();
         box.DOScale(1, 0.3f);
     }
     public void Deactive()
     {
+        box.DOScale(0.01f, 0f);
         rewards[(int)currenttype].SetActive(false);
         UIManager.Instance.CloseUI<CanvasGetReward>(0f);
     }

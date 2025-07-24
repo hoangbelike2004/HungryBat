@@ -16,49 +16,77 @@ MonoBehaviour:
   - description: Join the first level to get rewards
     typeAward: 3
     eventType: 0
-    stateEvent: 0
+    stateEvent: 1
     CompletionGoal: 1
-    progess: 1
+    progess: 0
     numberofReward: 100
   - description: Play 3 levels to earn a reward.
     typeAward: 3
     eventType: 0
     stateEvent: 1
     CompletionGoal: 3
-    progess: 1
+    progess: 0
     numberofReward: 250
   - description: Play 5 levels to claim your reward.
     typeAward: 4
     eventType: 0
     stateEvent: 1
-    CompletionGoal: 5
-    progess: 1
+    CompletionGoal: 1
+    progess: 0
     numberofReward: 3
   - description: Complete level 1 to receive your reward.
     typeAward: 0
     eventType: 1
-    stateEvent: 0
+    stateEvent: 1
     CompletionGoal: 1
-    progess: 1
+    progess: 0
     numberofReward: 1
   - description: Complete level 3 to receive your reward.
     typeAward: 1
     eventType: 1
     stateEvent: 1
     CompletionGoal: 3
-    progess: 1
+    progess: 2
     numberofReward: 1
   - description: Complete level 5 to receive your reward.
     typeAward: 2
     eventType: 1
     stateEvent: 1
     CompletionGoal: 5
-    progess: 1
+    progess: 2
     numberofReward: 1
   - description: Complete level 7 to receive your reward.
     typeAward: 1
     eventType: 1
     stateEvent: 1
     CompletionGoal: 7
-    progess: 1
+    progess: 2
     numberofReward: 1
+  - description: Complete level 9 to receive your reward.
+    typeAward: 1
+    eventType: 1
+    stateEvent: 1
+    CompletionGoal: 9
+    progess: 2
+    numberofReward: 2
+  - description: Complete level 11 to receive your reward.
+    typeAward: 2
+    eventType: 1
+    stateEvent: 1
+    CompletionGoal: 11
+    progess: 2
+    numberofReward: 2
+  - description: Complete level 13 to receive your reward.
+    typeAward: 4
+    eventType: 1
+    stateEvent: 1
+    CompletionGoal: 13
+    progess: 2
+    numberofReward: 3
+  - description: Complete level 15 to receive your reward.
+    typeAward: 3
+    eventType: 1
+    stateEvent: 1
+    CompletionGoal: 15
+    progess: 2
+    numberofReward: 600

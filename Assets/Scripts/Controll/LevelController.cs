@@ -4,38 +4,40 @@ using UnityEngine;
 
 public class LevelController : MonoBehaviour
 {
-    [SerializeField] Transform root;
     private GameLevel GameLevel;
-    List<LevelItem> leveltimes;
-    public void CreateLevel(Transform r, GameLevel gamelevel)
+    List<LevelItem> levelitems;
+    List<Transform> levelitemsparent;
+    public void CreateLevel(GameLevel gamelevel,List<Transform> ParentItems)
     {
-        root = r;
+        levelitems = new List<LevelItem>();
+        levelitemsparent = new List<Transform>();
         this.GameLevel = gamelevel;
-    }
-    private void Start()
-    {
-        leveltimes = new List<LevelItem>();
-        GameLevel = Resources.Load<GameLevel>(Constants.GAME_LEVEL_PATH);
+        levelitemsparent = ParentItems;
         CreateLevel();
         UpdateLevel();
     }
+    //private void Start()
+    //{
+    //    GameLevel = Resources.Load<GameLevel>(Constants.GAME_LEVEL_PATH);
+    //    CreateLevel();
+    //}
     public void CreateLevel()
     {
         GameObject prefab = Resources.Load<GameObject>(Constants.LEVEL_ITEM_PATH);
         for (int i = 0; i < GameLevel.levels.Count; i++)
         {
-            GameObject levelitem = Instantiate(prefab, root);
+            GameObject levelitem = Instantiate(prefab, levelitemsparent[i]);
             LevelItem level = levelitem.GetComponent<LevelItem>();
-            leveltimes.Add(level);
+            levelitems.Add(level);
             level.SetData(GameLevel.levels[i]);
         }
     }
 
     public void UpdateUI()//khi ngươi dùng chiến thắng thì sẽ updatUI
     {
-        for (int i = 0; i < leveltimes.Count; i++)
+        for (int i = 0; i < levelitems.Count; i++)
         {
-            leveltimes[i].SetUI();
+            levelitems[i].SetUI();
         }
     }
     public void UpdateLevel()

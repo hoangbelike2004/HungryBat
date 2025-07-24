@@ -19,6 +19,9 @@ public class SelectLevelUI : UICanvas
     [SerializeField] Transform parent;
     [SerializeField] List<BonusUI> bonUIs;
     [SerializeField] GameSetting gamesetting;
+    [SerializeField] Canvas canvasBonusItems;
+    [SerializeField] Canvas canvasBtnPlay, canvasHand, canvasHand2;
+    [SerializeField] RectTransform iconhand, iconhand2;
     private LevelData LevelData;
     private void Start()
     {
@@ -28,6 +31,7 @@ public class SelectLevelUI : UICanvas
             SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
             PlayGame();
         });
+        Observer.SelectBonusTutorialEvent += StartTutorial;
     }
     public void SetLevelData(LevelData levelData)
     {
@@ -46,6 +50,7 @@ public class SelectLevelUI : UICanvas
         overlay.gameObject.SetActive(true);
         overlay.DOFade(0.5f, 0.1f);
         box.DOAnchorPos(new Vector2(0, 0), 0.3f).SetEase(Ease.OutBounce);
+        StartTutorial();
     }
     public void PlayGame()
     {
@@ -55,6 +60,14 @@ public class SelectLevelUI : UICanvas
         GameController.Instance.SetLevelData(LevelData);
         GameController.Instance.SetState(eStateGame.STARTED);
         GameController.Instance.ChangeState();
+        if (GameController.Instance.GetIndexTutotial() == 4)
+        {
+            canvasBtnPlay.sortingOrder = 2;
+            HandTutorial(false, true);
+            GameController.Instance.SetIndexTutotial();
+            GameController.Instance.SetCanvasTutorial("Board");
+            GameController.Instance.ActiveTutorialGameplay();
+        }
         UIManager.Instance.CloseUI<CanvasMain>(0f);
         UIManager.Instance.CloseUI<SelectLevelUI>(0f);
     }
@@ -80,9 +93,9 @@ public class SelectLevelUI : UICanvas
         {
             UiCollects[i].gameObject.SetActive(false);
         }
-        for (int i = 0; i < LevelData.normalItem.Length; i++)
+        for (int i = 0; i < LevelData.normalItemtype.Length; i++)
         {
-            uiActive.Add(UiCollects[(int)LevelData.normalItem[i]]);
+            uiActive.Add(UiCollects[(int)LevelData.normalItemtype[i]]);
         }
         for (int i = 0; i < uiActive.Count; i++)
         {
@@ -97,6 +110,50 @@ public class SelectLevelUI : UICanvas
         {
             bonUIs[i].SetBonusData(gameSupport.bonusDatas[i]);
             bonUIs[i].UpdateUI();
+        }
+    }
+    public void StartTutorial()
+    {
+        if (GameController.Instance.GetIndexTutotial() == 5)
+        {
+            canvasBonusItems.sortingOrder = 4;
+            HandTutorial(true,false);
+        }
+        else if(GameController.Instance.GetIndexTutotial() == 4)
+        {
+            canvasBonusItems.sortingOrder = 2;
+            canvasBtnPlay.sortingOrder = 4;
+            HandTutorial(true, true);
+            Observer.SelectBonusTutorialEvent -= StartTutorial;
+        }
+    }
+    public void HandTutorial(bool isTutorial,bool isPlay)
+    {
+        if (!isPlay)
+        {
+            if (isTutorial)
+            {
+                canvasHand.gameObject.SetActive(true);
+                iconhand.DORotate(new Vector3(0, 180, 10), 0.15f).SetLoops(-1, LoopType.Yoyo);
+            }
+            else
+            {
+                canvasHand.gameObject.SetActive(false);
+                iconhand.DOKill();
+            }
+        }
+        else
+        {
+            if (isTutorial)
+            {
+                canvasHand2.gameObject.SetActive(true);
+                iconhand2.DORotate(new Vector3(0, 180, 10), 0.15f).SetLoops(-1, LoopType.Yoyo);
+            }
+            else
+            {
+                canvasHand2.gameObject.SetActive(false);
+                iconhand2.DOKill();
+            }
         }
     }
 }

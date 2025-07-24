@@ -19,7 +19,13 @@ public class LevelItem : MonoBehaviour
             SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
             if (GameController.Instance.GetHeart() > 0)
             {
+                if(GameController.Instance.GetIndexTutotial() == 6)
+                {
+                    GameController.Instance.SetIndexTutotial();
+                    GameController.Instance.SetDefaultCanvasLevel();
+                }
                 SelectLevelUI sel = UIManager.Instance.OpenUI<SelectLevelUI>();
+                GameController.Instance.SetSelectLevelUI(sel);
                 sel.SetLevelData(levelData);
                 sel.Active();
             }

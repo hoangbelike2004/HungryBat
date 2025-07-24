@@ -15,15 +15,18 @@ public class GameController : Singleton<GameController>
 {
     public eStateGame StateGame => stateGame;
     public int coin, currentProgess;
+    public int IndexTutorial = 6;
     private eStateGame stateGame;
     private LevelData _levelData;
     private BoardController m_boarcontroll;
     private CanvasGamePlay m_canvasGamePlay;
     private CanvasMain m_canvasMain;
+    private SelectLevelUI m_selectLevelUI;
     private CanvasOutofLives m_canvasOutofLives;
-    private int star, numbermove, sumItemAmout, score, hearts;
+    private CanvasTutorial m_CanvasTutorial;
+    private int star, numbermove, sumItemAmout, score;
     private float completionrate, timeHeart;
-    private bool isCoroutineRunning;
+    private bool isCoroutineRunning,isTutorial;
     private List<int> itemScore;
     private BonusData bonusdata;
     private GameSupportBonus m_gameSupportBonus;
@@ -36,9 +39,14 @@ public class GameController : Singleton<GameController>
         m_gameSupportBonus = Resources.Load<GameSupportBonus>(Constants.GAME_SUPPORT_BONUS_PATH);
         m_gameevent = Resources.Load<GameEvent>(Constants.GAME_EVENT_PATH);
         m_gamelevel = Resources.Load<GameLevel>(Constants.GAME_LEVEL_PATH);
+        m_gamelevel.Check();
+        m_gameSupportBonus.Check();
+        m_gameSetting.Check();
+        m_gameevent.Check();
     }
     private void Start()
     {
+        isCoroutineRunning = false;
         LoadDataPlayer();
         LoadHeartData();
         m_canvasMain = UIManager.Instance.OpenUI<CanvasMain>();
@@ -48,17 +56,31 @@ public class GameController : Singleton<GameController>
         m_canvasMain.SetState(eStateMain.HOME);
         m_canvasMain.UpdateCoin(coin);
         SoundManager.Instance.PlaySound(eAudioType.MUCSIC_MAIN_MENU);
+        if (PlayerPrefs.HasKey(Constants.KEY_TUTORIAL))
+        {
+            IndexTutorial = PlayerPrefs.GetInt(Constants.KEY_TUTORIAL);
+        }
+        if (IndexTutorial == 6)
+        {
+            m_CanvasTutorial = UIManager.Instance.OpenUI<CanvasTutorial>();
+            m_canvasMain.SetCanvasLevel1(4);
+            m_canvasMain.HandTutorial(true);
+        }
     }
     public void FixedUpdate()
     {
         if (m_gameSetting.hearts < m_gameSetting.heartMax)
         {
+            //if (!isCoroutineRunning)
+            //{
+            //    autoSaveHeart = StartCoroutine(AutoSaveHeart(1f));
+            //}
             timeHeart += Time.fixedDeltaTime;
             TimeSpan timespan = TimeSpan.FromSeconds(timeHeart);
             string strTime = string.Format("{0:D2}:{1:D2}", timespan.Minutes, timespan.Seconds);
-            if(m_canvasOutofLives != null)
+            if (m_canvasOutofLives != null)
             {
-                m_canvasOutofLives.UpdateUI(m_gameSetting.hearts,strTime);
+                m_canvasOutofLives.UpdateUI(m_gameSetting.hearts, strTime);
             }
             if (timespan.TotalMinutes >= m_gameSetting.MaxTimeHeart)
             {
@@ -69,6 +91,11 @@ public class GameController : Singleton<GameController>
         }
         else
         {
+            //if (autoSaveHeart != null)
+            //{
+            //    StopCoroutine(autoSaveHeart);
+            //}
+            //isCoroutineRunning = false;
             timeHeart = 0;
             m_canvasMain.UpdateTimeAndHeart("Full", m_gameSetting.hearts);
             if (m_canvasOutofLives != null)
@@ -79,6 +106,7 @@ public class GameController : Singleton<GameController>
     }
     public void Update()
     {
+        if (isTutorial) return;
         if (m_boarcontroll != null)
         {
             m_boarcontroll.UpdateGame();
@@ -123,12 +151,17 @@ public class GameController : Singleton<GameController>
                 break;
         }
     }
+    public void SetDefaultCanvasLevel()
+    {
+        m_canvasMain.SetCanvasLevel1(0);
+    }
     public void GameStart()
     {
         SoundManager.Instance.PlaySound(eAudioType.MUCSIC_GAME_PLAY);
         m_canvasGamePlay = UIManager.Instance.OpenUI<CanvasGamePlay>();
         m_canvasGamePlay.SetLevelData(_levelData);
         m_canvasGamePlay.UpdateUISupportBonus();
+        Utils.SetNormals(_levelData.normalItemtype);
         sumItemAmout = 0;
         score = 0;
         completionrate = 0;
@@ -170,6 +203,7 @@ public class GameController : Singleton<GameController>
             Destroy(m_boarcontroll.gameObject);
             m_boarcontroll = null;
             m_canvasGamePlay = null;
+            bonusdata = null;
             itemScore.Clear();
             StopAllCoroutines();
         }
@@ -249,7 +283,7 @@ public class GameController : Singleton<GameController>
         int tmp = 0;
         for (int i = 0; i < itemScore.Count; i++)
         {
-            if (_levelData.normalItem[i] == type)
+            if (_levelData.normalItemtype[i] == type)
             {
                 itemScore[i] -= numbergoal;
                 if (itemScore[i] < 0)
@@ -271,20 +305,60 @@ public class GameController : Singleton<GameController>
     public void SetCoin(int coin)
     {
         this.coin -= coin;
+        m_canvasMain.UpdateCoin(this.coin);
     }
     public int GetCoin()
     {
         return this.coin;
     }
-    public void SetHearts()
+    public void SetHearts(int hearts)
     {
-        m_gameSetting.hearts -= 1;
+        m_gameSetting.hearts -= hearts;
     }
     public int GetHeart()
     {
         return m_gameSetting.hearts;
     }
+    public int GetIndexTutotial()
+    {
+        return IndexTutorial;
+    }
+    public void SetIsTutorial(bool isTutorial)
+    {
+        this.isTutorial = isTutorial;
+    }
+    public void SetIndexTutotial()
+    {
+        IndexTutorial -= 1;
+        if(IndexTutorial == 5)
+        {
+            m_canvasMain.HandTutorial(false);
+        }else if(IndexTutorial == 4)
+        {
+            m_selectLevelUI.HandTutorial(false,false);
+        }else if(IndexTutorial == 3)
+        {
+            m_canvasGamePlay.HandTutorial(false);
+        }
+        if(IndexTutorial == 2)
+        {
+            m_canvasGamePlay.HandTutorial(false);
+            UIManager.Instance.CloseUI<CanvasTutorial>(0f);
+            PlayerPrefs.SetInt(Constants.KEY_TUTORIAL,IndexTutorial);
+        }
+    }
+    public void ActiveTutorialGameplay()
+    {
+        if (GameController.Instance.GetIndexTutotial() == 3)
+        {
+            m_canvasGamePlay.HandTutorial(true);
+        }
+    }
 
+    public void SetCanvasTutorial(string name)
+    {
+        m_CanvasTutorial.Canvas.sortingLayerName = name;
+    }
     public int GetCurrentProgess()
     {
         return currentProgess;
@@ -293,7 +367,9 @@ public class GameController : Singleton<GameController>
     {
         m_canvasOutofLives = canvas;
     }
-    private void OnApplicationQuit()
+
+    //SAVE AND LOAD DATALOCAL
+    public void SaveHeart()
     {
         if (m_gameSetting.hearts < m_gameSetting.heartMax)
         {
@@ -301,10 +377,8 @@ public class GameController : Singleton<GameController>
             PlayerPrefs.SetString("datequit", date.ToString());
             PlayerPrefs.SetFloat("timeheart", timeHeart);//thoi gian dang dem khi thoat game
         }
-        SaveDataPlayer();
-    }
 
-    //SAVE AND LOAD DATALOCAL
+    }
     public void SaveDataPlayer()
     {
         LevelData level = new LevelData();
@@ -316,15 +390,11 @@ public class GameController : Singleton<GameController>
                 break;
             }
         }
-        List<int> amoutBonus = new List<int>();
-        for (int i = 0; i < m_gameSupportBonus.bonusDatas.Count; i++)
-        {
-            amoutBonus.Add(m_gameSupportBonus.bonusDatas[i].amout);
-        }
         DataUtils.SaveData(m_gameSetting.hearts, coin, level, currentProgess, m_gameevent.events
-            , amoutBonus, m_gameSetting.volumeMusic, m_gameSetting.volumeSound);
+            , m_gameSupportBonus.bonusDatas, m_gameSetting.volumeMusic, m_gameSetting.volumeSound);
         DateTime date = DateTime.Now;
-        PlayerPrefs.SetString(Constants.KEY_LATE_LOGIN_DATE,date.ToString("yyyy-MM-dd"));
+        PlayerPrefs.SetString(Constants.KEY_LATE_LOGIN_DATE, date.ToString("yyyy-MM-dd"));
+
     }
 
     public void LoadDataPlayer()
@@ -336,9 +406,9 @@ public class GameController : Singleton<GameController>
             LevelData leveldata = playerdata.currentlevel;
             m_gamelevel.LoadDataLevel(leveldata);
             //loadItemBonus
-            m_gameSupportBonus.LoadDataItem(playerdata.AmoutItemBonus);
+            m_gameSupportBonus.LoadDataItem(playerdata.Itembonuses);
             //loadsetting
-            m_gameSetting.LoadDataSetting(playerdata.VolumeMusic,playerdata.volumeSound);
+            m_gameSetting.LoadDataSetting(playerdata.hearts, playerdata.VolumeMusic, playerdata.volumeSound);
             //loadevent
             if (PlayerPrefs.HasKey(Constants.KEY_LATE_LOGIN_DATE))
             {
@@ -347,7 +417,6 @@ public class GameController : Singleton<GameController>
                 DateTime today = DateTime.Now.Date;
                 if (today > latedate)
                 {
-                    Debug.Log(1);
                     currentProgess = 0;
                 }
                 else
@@ -358,7 +427,10 @@ public class GameController : Singleton<GameController>
             m_gameevent.LoadDataEvent(playerdata.events);
             //lOADCOIN
             coin = playerdata.coin;
-
+        }
+        else
+        {
+            m_gameSetting.hearts = m_gameSetting.heartMax;
         }
     }
     public void LoadHeartData()
@@ -373,6 +445,23 @@ public class GameController : Singleton<GameController>
             m_gameSetting.hearts = m_gameSetting.hearts + amoutHeart;
             m_gameSetting.hearts = Mathf.Clamp(m_gameSetting.hearts, 0, m_gameSetting.heartMax);
             timeHeart = (float)(timepassed.TotalSeconds % (m_gameSetting.MaxTimeHeart * 60));
+        }
+    }
+    public void SetSelectLevelUI(SelectLevelUI selectLevelUI)
+    {
+        this.m_selectLevelUI = selectLevelUI;
+    }
+    private void OnApplicationQuit()
+    {
+        SaveHeart();
+        SaveDataPlayer();
+    }
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            SaveHeart();
+            SaveDataPlayer();
         }
     }
     private void OnEnable()

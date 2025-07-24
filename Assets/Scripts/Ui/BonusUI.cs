@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class BonusUI : MonoBehaviour
@@ -9,6 +10,7 @@ public class BonusUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI txtAmoutItem;
     [SerializeField] Button btnSelect;
     [SerializeField] Image SelectionIndicator;
+    [SerializeField] Image glow;
     private bool isSelected = false;
     private BonusData bonusdata;
 
@@ -22,6 +24,11 @@ public class BonusUI : MonoBehaviour
                 {
                     SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
                     GameController.Instance.SetBonusData(bonusdata);
+                    glow.gameObject.SetActive(true);
+                    if (GameController.Instance.GetIndexTutotial() == 2)
+                    {
+                        GameController.Instance.SetIndexTutotial();
+                    }
                 }
                 else
                 {
@@ -38,6 +45,11 @@ public class BonusUI : MonoBehaviour
                         SelectionIndicator.gameObject.SetActive(false);
                         bonusdata.state = eStateBonusItem.UNSELECTED;
                     }
+                    if (GameController.Instance.GetIndexTutotial() == 5)
+                    {
+                        GameController.Instance.SetIndexTutotial();
+                        Observer.SelectBonusTutorialEvent.Invoke();
+                    }
                 }
             }
         });
@@ -45,17 +57,18 @@ public class BonusUI : MonoBehaviour
     public void SetBonusData(BonusData bonusdata)
     {
         this.bonusdata = bonusdata;
+        isSelected = bonusdata.state == eStateBonusItem.SELECTED ? true : false;
     }
     public void UpdateUI()
     {
         txtAmoutItem.text = bonusdata.amout.ToString();
-        if(bonusdata.state == eStateBonusItem.UNSELECTED)
+        if (bonusdata.state == eStateBonusItem.UNSELECTED)
         {
             SelectionIndicator.gameObject.SetActive(false);
         }
         else
         {
-            if(bonusdata.amout == 0)
+            if (bonusdata.amout == 0)
             {
                 bonusdata.state = eStateBonusItem.UNSELECTED;
                 SelectionIndicator.gameObject.SetActive(false);
@@ -66,8 +79,13 @@ public class BonusUI : MonoBehaviour
             }
         }
     }
+    public void DeactiveGlow()
+    {
+        glow.gameObject.SetActive(false);
+    }
     public void UpdateAmout()
     {
         txtAmoutItem.text = bonusdata.amout.ToString();
+        DeactiveGlow();
     }
 }

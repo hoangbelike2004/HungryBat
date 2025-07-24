@@ -77,4 +77,6 @@ public static class Constants
     public const string KEY_DATA_PLAYER = "DATAPLAYER";
 
     public const string KEY_LATE_LOGIN_DATE = "LATELOGINDATE";
+
+    public const string KEY_TUTORIAL = "TUTORIAL";
 }

@@ -85,7 +85,6 @@ public class CanvasComplete : UICanvas
                 GameController.Instance.SetState(eStateGame.MAIN_MENU);
                 GameController.Instance.ChangeState();
             });
-
         });
     }
     public void ReLoadGame()

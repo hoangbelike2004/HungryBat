@@ -9,4 +9,5 @@ public static class Observer
     public static UnityAction OnMoveEvent;
     public static UnityAction<NormalItem.eNormalType,int> OnUpdateScore;
     public static UnityAction NotificationEvent;
+    public static UnityAction SelectBonusTutorialEvent;
 }

@@ -8,9 +8,10 @@ public class EventItem : MonoBehaviour
 {
     [SerializeField] Button btnFinshed;//button nhan thuong
     [SerializeField] Image unfinished;
-    [SerializeField] TextMeshProUGUI txtprogess,txtDescription;
+    [SerializeField] TextMeshProUGUI txtprogess,txtDescription,txtamout;
     [SerializeField] Image received;
     [SerializeField] private GameLevel gamelevel;
+    [SerializeField] Image[] icons;
     public eStateEvent eStateEvent => evendata.stateEvent;
     private EventData evendata;
     private GameSupportBonus gameSupportBonus;
@@ -36,9 +37,10 @@ public class EventItem : MonoBehaviour
                 gameSupportBonus.bonusDatas[2].amout += evendata.numberofReward;
                 break;
             case eAwardType.AWARD_COIN:
-                GameController.Instance.SetCoin(evendata.numberofReward);
+                GameController.Instance.SetCoin(-evendata.numberofReward);
                 break;
             case eAwardType.AWARD_HEARTS:
+                GameController.Instance.SetHearts(-evendata.numberofReward);
                 break;
         }
         UpdateUIEvent();
@@ -95,6 +97,18 @@ public class EventItem : MonoBehaviour
     {
         if (evendata == null) return;
         txtDescription.text = evendata.description;
+        for(int i = 0;i < icons.Length;i++)
+        {
+            if(i != (int)evendata.typeAward)
+            {
+                icons[i].gameObject.SetActive(false);
+            }
+            else
+            {
+                icons[i].gameObject.SetActive(true);
+            }
+        }
+        txtamout.text = "x"+evendata.numberofReward.ToString();
         if (evendata.stateEvent == eStateEvent.UNFINISHED)
         {
             btnFinshed.gameObject.SetActive(false);

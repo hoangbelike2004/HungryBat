@@ -16,7 +16,7 @@ public class LevelData
     public eStateLevel levelType;
     public int moveNumber;
     public int starNumber;
-    public NormalItem.eNormalType[] normalItem;
+    public NormalItem.eNormalType[] normalItemtype;
     public int[] itemAmount;
     public int coin;
 }

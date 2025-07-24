@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BoardController : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class BoardController : MonoBehaviour
 
     private bool m_gameComplete = false;
     private BonusData m_bonusData;
-    public void StartGame(LevelData level,GameSetting gamesetting)
+    public void StartGame(LevelData level, GameSetting gamesetting)
     {
         m_gameSettings = gamesetting;
         m_levelData = level;
@@ -56,6 +57,7 @@ public class BoardController : MonoBehaviour
     public void UpdateGame()
     {
         if (m_gameComplete) return;
+        if (UIManager.Instance.IsOpen<CanvasSetting>()) return;
         if (IsBusy) return;
 
         if (!m_hintIsShown)
@@ -77,10 +79,13 @@ public class BoardController : MonoBehaviour
                     Cell cellcr = hit.collider.GetComponent<Cell>();
                     if (cellcr.Item is NormalItem)
                     {
+                        StopHints();
                         NormalItem nor = cellcr.Item as NormalItem;
+                        cellcr.StopHintAnimation();
                         cellcr.ExplodeItem();
                         m_board.ConvertNormalToBonus(cellcr, nor.ItemType, m_bonusData.type, m_levelData);
                         GameController.Instance.UsedBonus();
+                        m_potentialMatch = m_board.GetPotentialMatches();
                         m_bonusData = null;
                         return;
                     }
@@ -165,6 +170,7 @@ public class BoardController : MonoBehaviour
 
                 m_board.Swap(cell1, cell2, () =>
                 {
+                    m_potentialMatch = m_board.GetPotentialMatches();
                     IsBusy = false;
                 });
             }
@@ -229,7 +235,7 @@ public class BoardController : MonoBehaviour
     {
         NormalItem normalItem = matches[0].Item as NormalItem;
         NormalItem.eNormalType enor = normalItem.ItemType;
-        for (int i = 0; i < m_levelData.normalItem.Length; i++)
+        for (int i = 0; i < m_levelData.normalItemtype.Length; i++)
         {
             List<Cell> cellGoals = new List<Cell>();
             for (int j = 0; j < matches.Count; j++)
@@ -237,7 +243,7 @@ public class BoardController : MonoBehaviour
                 if (matches[j].Item is NormalItem)
                 {
                     NormalItem nor = matches[j].Item as NormalItem;
-                    if (nor.ItemType == m_levelData.normalItem[i])
+                    if (nor.ItemType == m_levelData.normalItemtype[i])
                     {
                         cellGoals.Add(matches[j]);
                     }
@@ -245,7 +251,7 @@ public class BoardController : MonoBehaviour
             }
             if (cellGoals.Count > 0)
             {
-                Observer.OnUpdateScore?.Invoke(m_levelData.normalItem[i], cellGoals.Count);
+                Observer.OnUpdateScore?.Invoke(m_levelData.normalItemtype[i], cellGoals.Count);
             }
         }
         GameController.Instance.Setscore(matches.Count);
@@ -266,6 +272,7 @@ public class BoardController : MonoBehaviour
     private IEnumerator ShiftDownItemsCoroutine()//sinh ra nhung item bị bien mat va goi y cho nguoi cho nguoi ch
     {
         IsBusy = true;
+        yield return new WaitForSeconds(0.2f);
         m_board.ShiftDownItems();//di chuyen cac item xuong khi cac item ben duoi bi xoa
 
         yield return new WaitForSeconds(0.4f);
@@ -277,18 +284,18 @@ public class BoardController : MonoBehaviour
         FindMatchesAndCollapse();
     }
 
-    private IEnumerator RefillBoardCoroutine()
-    {
-        m_board.ExplodeAllItems();
+    //private IEnumerator RefillBoardCoroutine()
+    //{
+    //    m_board.ExplodeAllItems();
 
-        yield return new WaitForSeconds(0.2f);
+    //    yield return new WaitForSeconds(0.2f);
 
-        m_board.Fill();
+    //    m_board.Fill();
 
-        yield return new WaitForSeconds(0.2f);
+    //    yield return new WaitForSeconds(0.2f);
 
-        FindMatchesAndCollapse();
-    }
+    //    FindMatchesAndCollapse();
+    //}
 
     private IEnumerator ShuffleBoardCoroutine()
     {
@@ -302,7 +309,8 @@ public class BoardController : MonoBehaviour
 
     private void SetSortingLayer(Cell cell1, Cell cell2)
     {
-        if (cell1.Item != null) cell1.Item.SetSortingLayerHigher();
+        if (GameController.Instance.GetIndexTutotial() == 3) return;
+        if (cell1.Item != null) cell1.Item.SetSortingLayerHigher(2);
         if (cell2.Item != null) cell2.Item.SetSortingLayerLower();
     }
 

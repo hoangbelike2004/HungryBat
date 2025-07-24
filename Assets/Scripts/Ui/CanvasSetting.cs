@@ -43,7 +43,7 @@ public class CanvasSetting : UICanvas
                 UIManager.Instance.CloseAll();
                 GameController.Instance.SetState(eStateGame.MAIN_MENU);
                 GameController.Instance.ChangeState();
-                GameController.Instance.SetHearts();
+                GameController.Instance.SetHearts(1);
             }
             else
             {

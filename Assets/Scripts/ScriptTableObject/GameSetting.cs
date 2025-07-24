@@ -28,9 +28,21 @@ public class GameSetting : ScriptableObject
 
     public float volumeSound = 1;
 
-    public void LoadDataSetting(float music,float sound)
+    public void LoadDataSetting(int heart,float music,float sound)
     {
         this.volumeMusic = music;
         this.volumeSound = sound;
+        this.hearts = heart;
+    }
+    public void Check()
+    {
+        if(heartMax < 0)
+        {
+            Debug.LogError("Luot choi toi da phai > 0");
+        }
+        if(heartMax < 0)
+        {
+            Debug.Log("Luot choi > 0");
+        }
     }
 }

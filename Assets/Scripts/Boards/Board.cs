@@ -15,16 +15,10 @@ public class Board
     private float originY;
 
     private Cell[,] m_cells;
-    public List<Cell> row_collected_item
-    {
-        get;
-        private set;
-    }
-
     private Transform m_root;
 
     private int m_matchMin;
-    public bool isCallbackRunning = false;
+    //public bool isCallbackRunning = false;
 
     public Board(Transform transform, GameSetting gameSettings)
     {
@@ -39,29 +33,27 @@ public class Board
         this.originY = gameSettings.OriginY;
 
         m_cells = new Cell[boardSizeX, boardSizeY];
-        row_collected_item = new List<Cell>(6);
         CreateBoard();
     }
 
     private void CreateBoard()
     {
         Vector3 origin = new Vector3(originX, originY, 0f);
-        GameObject prefabBG0 = Resources.Load<GameObject>(Constants.PREFAB_CELL_BACKGROUND0);
-        GameObject prefabBG1 = Resources.Load<GameObject>(Constants.PREFAB_CELL_BACKGROUND1);
+        //GameObject prefabBG0 = Resources.Load<GameObject>(Constants.PREFAB_CELL_BACKGROUND0);
+        //GameObject prefabBG1 = Resources.Load<GameObject>(Constants.PREFAB_CELL_BACKGROUND1);
         bool isBg = true;
         for (int x = 0; x < boardSizeX; x++)
         {
             for (int y = 0; y < boardSizeY; y++)
             {
-                GameObject go = GameObject.Instantiate(isBg ? prefabBG0 : prefabBG1);
+                Cell go = SimplePool.Spawn<Cell>(isBg ? PoolType.BG0 : PoolType.BG1, Vector3.zero, Quaternion.identity);
                 isBg = !isBg;
                 go.transform.position = origin + new Vector3(x * 0.5f, y * 0.5f, 0f);
-                go.transform.SetParent(m_root);
 
-                Cell cell = go.GetComponent<Cell>();
-                cell.Setup(x, y);
+                //Cell cell = go.GetComponent<Cell>();
+                go.Setup(x, y);
 
-                m_cells[x, y] = cell;
+                m_cells[x, y] = go;
             }
         }
 
@@ -109,7 +101,7 @@ public class Board
 
                 item.SetType(Utils.GetRandomNormalTypeExcept(types.ToArray()));
                 item.SetView();
-                item.SetViewRoot(m_root);
+                //item.SetViewRoot(m_root);
 
                 cell.Assign(item);
                 cell.ApplyItemPosition(false);
@@ -154,7 +146,7 @@ public class Board
 
                 item.SetType(Utils.GetRandomNormalType());
                 item.SetView();
-                item.SetViewRoot(m_root);
+                //item.SetViewRoot(m_root);
 
                 cell.Assign(item);
                 cell.ApplyItemPosition(true);
@@ -287,7 +279,7 @@ public class Board
         if (item != null)
         {
             item.SetView();
-            item.SetViewRoot(m_root);
+            //item.SetViewRoot(m_root);
             item.SetCells(m_cells);
             item.SetLevelData(leveldata);
 
@@ -329,7 +321,7 @@ public class Board
                 cellToConvert = matches[rnd];
             }
             item.SetView();
-            item.SetViewRoot(m_root);
+            //item.SetViewRoot(m_root);
             item.SetCells(m_cells);
             item.SetLevelData(leveldata);
 
@@ -685,7 +677,7 @@ public class Board
                 Cell cell = m_cells[x, y];
                 cell.Clear();
 
-                GameObject.Destroy(cell.gameObject);
+                SimplePool.Despawn(cell);
                 m_cells[x, y] = null;
             }
         }

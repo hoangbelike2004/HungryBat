@@ -23,9 +23,9 @@ public class BuyBonusItem : MonoBehaviour
             }
             else
             {
+                bonusdata.amout += 1;
                 GameController.Instance.SetCoin(bonusdata.price);
                 canvasmain.UpdateCoin(GameController.Instance.GetCoin());
-                bonusdata.amout += 1;
                 canvasmain.ActiveNotification(true);
             }
         });

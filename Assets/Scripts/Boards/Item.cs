@@ -7,27 +7,27 @@ using DG.Tweening;
 [Serializable]
 public class Item
 {
+    private Transform child;
     public Cell Cell { get; private set; }
 
     public Transform View { get; private set; }
-    public string nameItem;
 
     public virtual void SetView()
     {
-        string prefabname = GetPrefabName();
+        PoolType prefabtype = GetPrefabType();
 
-        if (!string.IsNullOrEmpty(prefabname))
+        if (prefabtype != PoolType.ITEM_NONE)
         {
-            GameObject prefab = Resources.Load<GameObject>(prefabname);
-            nameItem = prefabname;
+            GameUnit prefab = SimplePool.Spawn<GameUnit>(prefabtype,Vector3.zero,Quaternion.identity);
             if (prefab)
             {
-                View = GameObject.Instantiate(prefab).transform;
+                View = prefab.transform;
+                child = View.Find("Visual");
             }
         }
     }
 
-    protected virtual string GetPrefabName() { return string.Empty; }
+    protected virtual PoolType GetPrefabType() { return PoolType.ITEM_NONE; }
 
     public virtual void SetCell(Cell cell)
     {
@@ -49,22 +49,29 @@ public class Item
         }
     }
 
-    public void SetViewRoot(Transform root)
-    {
-        if (View)
-        {
-            View.SetParent(root);
-        }
-    }
+    //public void SetViewRoot(Transform root)
+    //{
+    //    if (View)
+    //    {
+    //        View.SetParent(root);
+    //    }
+    //}
 
-    public void SetSortingLayerHigher()
+    public void SetSortingLayerHigher(int indexLayer)
     {
         if (View == null) return;
-
-        SpriteRenderer sp = View.GetComponent<SpriteRenderer>();
+        SpriteRenderer sp;
+        if (child != null)
+        {
+            sp = child.GetComponent<SpriteRenderer>();
+        }
+        else
+        {
+            sp = View.GetComponent<SpriteRenderer>();
+        }
         if (sp)
         {
-            sp.sortingOrder = 2;
+            sp.sortingOrder = indexLayer;
         }
     }
 
@@ -72,8 +79,15 @@ public class Item
     public void SetSortingLayerLower()
     {
         if (View == null) return;
-
-        SpriteRenderer sp = View.GetComponent<SpriteRenderer>();
+        SpriteRenderer sp;
+        if (child != null)
+        {
+            sp = child.GetComponent<SpriteRenderer>();
+        }
+        else
+        {
+            sp = View.GetComponent<SpriteRenderer>();
+        }
         if (sp)
         {
             sp.sortingOrder = 1;
@@ -102,15 +116,21 @@ public class Item
             View.DOScale(0.1f, 0.1f).OnComplete(
                 () =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    SimplePool.Despawn(View.GetComponent<GameUnit>());
+                    View.DOScale(1, 0);
+                    ParticalItem par = SimplePool.Spawn<ParticalItem>(PoolType.VFX_NORMALITEM, View.position, Quaternion.identity);
+                    par.ActiveAndWaitForDeactive();
                     View = null;
                 }
                 );
         }
     }
-    internal void SetNullView()
+    internal void ExplodeViewBonus()
     {
         if (View == null) return;
+        View.GetComponent<SpriteRenderer>().DOFade(1, 0);
+        View.DOScale(1, 0);
+        View.DORotate(Vector3.zero, 0);
         View = null;
     }
 

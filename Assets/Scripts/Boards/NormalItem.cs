@@ -22,35 +22,35 @@ public class NormalItem : Item
         ItemType = type;
     }
 
-    protected override string GetPrefabName()
+    protected override PoolType GetPrefabType()
     {
-        string prefabname = string.Empty;
+        PoolType prefabtype = PoolType.ITEM_NONE;
         switch (ItemType)
         {
             case eNormalType.TYPE_ONE:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_ONE;
+                prefabtype = PoolType.ITEM_APPLE;
                 break;
             case eNormalType.TYPE_TWO:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_TWO;
+                prefabtype = PoolType.ITEM_BANANA;
                 break;
             case eNormalType.TYPE_THREE:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_THREE;
+                prefabtype = PoolType.ITEM_BLUEBERRY;
                 break;
             case eNormalType.TYPE_FOUR:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_FOUR;
+                prefabtype = PoolType.ITEM_GRAPE;
                 break;
             case eNormalType.TYPE_FIVE:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_FIVE;
+                prefabtype = PoolType.ITEM_ORANGE;
                 break;
             case eNormalType.TYPE_SIX:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_SIX;
+                prefabtype = PoolType.ITEM_PEAR;
                 break;
             case eNormalType.TYPE_SEVEN:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_SEVEN;
+                prefabtype = PoolType.ITEM_STRAWBERRY;
                 break;
         }
 
-        return prefabname;
+        return prefabtype;
     }
 
     internal override bool IsSameType(Item other)

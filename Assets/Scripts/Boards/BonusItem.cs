@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -37,31 +38,31 @@ public class BonusItem : Item
     {
         normal = type;
     }
-    protected override string GetPrefabName()
+    protected override PoolType GetPrefabType()
     {
-        string prefabname = string.Empty;
+        PoolType prefabtype = PoolType.ITEM_NONE;
         switch (ItemType)
         {
             case eBonusType.NONE:
                 break;
             case eBonusType.HORIZONTAL:
-                prefabname = Constants.PREFAB_BONUS_HORIZONTAL;
+                prefabtype = PoolType.ITEM_HORIZONTAL;
                 break;
             case eBonusType.VERTICAL:
-                prefabname = Constants.PREFAB_BONUS_VERTICAL;
+                prefabtype = PoolType.ITEM_VERTICAL;
                 break;
             case eBonusType.BOMB:
-                prefabname = Constants.PREFAB_BONUS_BOMB;
+                prefabtype = PoolType.ITEM_BOMB;
                 break;
             case eBonusType.LIGHTNING:
-                prefabname = Constants.PREFAB_BONUS_LIGHTNING;
+                prefabtype = PoolType.ITEN_LIGHTNING;
                 break;
             case eBonusType.POTION:
-                prefabname = Constants.PREFAB_BONUS_POTION;
+                prefabtype = PoolType.ITEM_POTION;
                 break;
         }
 
-        return prefabname;
+        return prefabtype;
     }
 
     internal override bool IsSameType(Item other)
@@ -80,20 +81,20 @@ public class BonusItem : Item
                 View.DOScale(1.4f, 0.4f);
                 spr.DOFade(0.1f, 0.4f).OnComplete(() =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    SimplePool.Despawn(View.GetComponent<GameUnit>());
                     SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_DIRECTION);
-                    SetNullView();
                     ExplodeHorizontal();
+                    ExplodeViewBonus();
                 });
                 break;
             case eBonusType.VERTICAL:
                 View.DOScale(1.4f, 0.4f);
                 spr.DOFade(0.1f, 0.4f).OnComplete(() =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    SimplePool.Despawn(View.GetComponent<GameUnit>());
                     SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_DIRECTION);
-                    SetNullView();
                     ExplodeVertical();
+                    ExplodeViewBonus();
                 });
                 break;
             case eBonusType.BOMB:
@@ -101,20 +102,24 @@ public class BonusItem : Item
                 View.DORotate(new Vector3(0, 0, -40), 0.15f).SetLoops(3, LoopType.Yoyo).SetEase(Ease.InOutQuad);
                 View.DOScale(1.4f, 0.15f).SetLoops(3, LoopType.Yoyo).OnComplete(() =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    SimplePool.Despawn(View.GetComponent<GameUnit>());
                     SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_BOMB);
-                    SetNullView();
                     ExplodeBomb();
+                    ParticalItem par = SimplePool.Spawn<ParticalItem>(PoolType.VFX_BOMB, View.position, Quaternion.identity);
+                    par.ActiveAndWaitForDeactive();
+                    ExplodeViewBonus();
                 });
                 break;
             case eBonusType.LIGHTNING:
                 View.DOScale(1.4f, 0.4f);
                 spr.DOFade(0.1f, 0.4f).OnComplete(() =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    SimplePool.Despawn(View.GetComponent<GameUnit>());
                     SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_LIGHTNING);
-                    SetNullView();
                     ExplodeLightning();
+                    ParticalItem par = SimplePool.Spawn<ParticalItem>(PoolType.VFX_LINGTNING, View.position, Quaternion.identity);
+                    par.ActiveAndWaitForDeactive();
+                    ExplodeViewBonus();
                 });
                 break;
             case eBonusType.POTION:
@@ -122,12 +127,37 @@ public class BonusItem : Item
                 View.DORotate(new Vector3(0, 0, -40), 0.15f).SetLoops(3, LoopType.Yoyo).SetEase(Ease.InOutQuad);
                 View.DOScale(1.4f, 0.15f).SetLoops(3, LoopType.Yoyo).OnComplete(() =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    SimplePool.Despawn(View.GetComponent<GameUnit>());
                     SoundManager.Instance.PlaySound(eAudioType.ITEM_BOUNUS_POTION);
-                    SetNullView();
                     ExplodePotion();
+                    ParticalItem par = SimplePool.Spawn<ParticalItem>(GetVfxPotionType(), View.position, Quaternion.identity);
+                    par.ActiveAndWaitForDeactive();
+                    ExplodeViewBonus();
                 });
                 break;
+        }
+    }
+    public PoolType GetVfxPotionType()
+    {
+        if(normal == NormalItem.eNormalType.TYPE_TWO || normal == NormalItem.eNormalType.TYPE_FIVE)
+        {
+            return PoolType.VFX_POTIONORANGEANDYELLOW;
+        }
+        else if (normal == NormalItem.eNormalType.TYPE_THREE)
+        {
+            return PoolType.VFX_POTIONBLUE;
+        }
+        else if (normal == NormalItem.eNormalType.TYPE_FOUR)
+        {
+            return PoolType.VFX_POTIONPURPLE;
+        }
+        else if (normal == NormalItem.eNormalType.TYPE_SIX)
+        {
+            return PoolType.VFX_POTIONGREEN;
+        }
+        else//seven and one
+        {
+            return PoolType.VFX_POTIONRED;
         }
     }
     private void ExplodeBomb()
@@ -159,15 +189,15 @@ public class BonusItem : Item
                 list.Add(Cell.NeighbourRight.NeighbourBottom);
             }
         }
-
-        bool isBonus = true;
+        List<Cell> BonusItems = list.Where(x => x.Item is BonusItem).ToList();
+        bool isBonus = BonusItems.Count > 0 ? false : true;
         GetFruitGoal(list);
         for (int i = 0; i < list.Count; i++)
         {
-            if (list[i].Item is BonusItem)
-            {
-                isBonus = false;
-            }
+            //if (list[i].Item is BonusItem)
+            //{
+            //    isBonus = false;
+            //}
             list[i].ExplodeItem();
         }
         if (isBonus)
@@ -199,7 +229,6 @@ public class BonusItem : Item
             list.Add(next);
             newcell = next;
         }
-
 
         bool isBonus = true;
         GetFruitGoal(list);
@@ -360,7 +389,7 @@ public class BonusItem : Item
 
     public void GetFruitGoal(List<Cell> cells)
     {
-        for (int i = 0; i < levelData.normalItem.Length; i++)
+        for (int i = 0; i < levelData.normalItemtype.Length; i++)
         {
             List<Cell> cellGoals = new List<Cell>();
             for (int j = 0; j < cells.Count; j++)
@@ -368,7 +397,7 @@ public class BonusItem : Item
                 if (cells[j].Item is NormalItem)
                 {
                     NormalItem nor = cells[j].Item as NormalItem;
-                    if (nor.ItemType == levelData.normalItem[i])
+                    if (nor.ItemType == levelData.normalItemtype[i])
                     {
                         cellGoals.Add(cells[j]);
                     }
@@ -376,7 +405,7 @@ public class BonusItem : Item
             }
             if (cellGoals.Count > 0)
             {
-                Observer.OnUpdateScore?.Invoke(levelData.normalItem[i], cellGoals.Count);
+                Observer.OnUpdateScore?.Invoke(levelData.normalItemtype[i], cellGoals.Count);
             }
         }
         GameController.Instance.Setscore(cells.Count);
