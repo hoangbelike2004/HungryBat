@@ -1,4 +1,6 @@
-﻿using DG.Tweening.Core.Easing;
+﻿using DG.Tweening;
+using DG.Tweening.Core.Easing;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,7 @@ public class BoardController : MonoBehaviour
 
     private Board m_board;
 
+    private GameObject tutorial;
 
     private bool m_isDragging;
 
@@ -84,9 +87,15 @@ public class BoardController : MonoBehaviour
                         cellcr.StopHintAnimation();
                         cellcr.ExplodeItem();
                         m_board.ConvertNormalToBonus(cellcr, nor.ItemType, m_bonusData.type, m_levelData);
+                        cellcr.ExplodeItem();
+                        Observer.OnMoveEvent?.Invoke();
                         GameController.Instance.UsedBonus();
                         m_potentialMatch = m_board.GetPotentialMatches();
                         m_bonusData = null;
+                        if (GameController.Instance.GetIndexTutotial() == 2)
+                        {
+                            GameController.Instance.SetIndexTutotial();
+                        }
                         return;
                     }
                     //thực hiện convert normal => bonus
@@ -109,9 +118,15 @@ public class BoardController : MonoBehaviour
                 if (m_hitCollider != null && m_hitCollider != hit.collider)
                 {
                     StopHints();
-
+                    
                     Cell c1 = m_hitCollider.GetComponent<Cell>();
                     Cell c2 = hit.collider.GetComponent<Cell>();
+                    if (c1.IsEmpty || c2.IsEmpty)
+                    {
+                        m_potentialMatch = m_board.GetPotentialMatches();
+                        IsBusy = false;
+                        return;
+                    }
                     if (AreItemsNeighbor(c1, c2))
                     {
                         IsBusy = true;
@@ -167,7 +182,6 @@ public class BoardController : MonoBehaviour
 
             if (matches.Count < m_gameSettings.MatchesMin)//kiem tra xem neu ko xay ra matches thi di chuyen 2 item
             {
-
                 m_board.Swap(cell1, cell2, () =>
                 {
                     m_potentialMatch = m_board.GetPotentialMatches();
@@ -343,7 +357,23 @@ public class BoardController : MonoBehaviour
 
         m_potentialMatch.Clear();
     }
-
+    public void ActiveTutorial()
+    {
+        Cell cel = m_board.GetItemCenter(m_gameSettings);
+        cel.Item.SetSortingLayerHigher(4);
+        GameObject prefab = Resources.Load<GameObject>(Constants.PREFAB_TUTORIAL);
+        if(prefab != null)
+        {
+            tutorial = GameObject.Instantiate(prefab);
+            tutorial.transform.SetParent(cel.Item.View);
+            tutorial.transform.localPosition = new Vector3(-0.35f, -0.35f, 0);
+            tutorial.transform.DORotate(new Vector3(0, 0, 10), 0.15f).SetLoops(-1, LoopType.Yoyo);
+        }
+    }
+    public void DeactiveTutorial()
+    {
+        GameObject.Destroy(tutorial);
+    }
     private void ShiftOnEvent()
     {
         StartCoroutine(ShiftDownItemsCoroutine());

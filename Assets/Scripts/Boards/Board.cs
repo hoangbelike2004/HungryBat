@@ -682,4 +682,11 @@ public class Board
             }
         }
     }
+    public Cell GetItemCenter(GameSetting m_gameSettings)
+    {
+        int x = (int)Mathf.Ceil(m_gameSettings.BoardSizeX / 2);
+        int y = (int)Mathf.Ceil(m_gameSettings.BoardSizeY / 2);
+        return m_cells[x, y];
+
+    }
 }

@@ -44,11 +44,18 @@ public class CanvasComplete : UICanvas
                 startvalue = x;
                 txtScore.text = x.ToString();
             }, score, 1f).SetEase(Ease.Linear);
-            DOTween.To(() => startvalue, x =>
+            if(coin == 0)
             {
-                startvalue = x;
-                txtCoin.text = x.ToString();
-            }, coin, 1f).SetEase(Ease.Linear);
+                txtCoin.text = "0";
+            }
+            else
+            {
+                DOTween.To(() => startvalue, x =>
+                {
+                    startvalue = x;
+                    txtCoin.text = x.ToString();
+                }, coin, 1f).SetEase(Ease.Linear);
+            }
             Sequence sq = DOTween.Sequence();
             for (int i = 0; i < star; i++)
             {

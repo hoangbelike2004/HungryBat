@@ -25,7 +25,7 @@ public class BonusUI : MonoBehaviour
                     SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
                     GameController.Instance.SetBonusData(bonusdata);
                     glow.gameObject.SetActive(true);
-                    if (GameController.Instance.GetIndexTutotial() == 2)
+                    if (GameController.Instance.GetIndexTutotial() == 3)
                     {
                         GameController.Instance.SetIndexTutotial();
                     }

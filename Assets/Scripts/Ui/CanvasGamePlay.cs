@@ -18,7 +18,6 @@ public class CanvasGamePlay : UICanvas
     private List<GameObject> Pluses;
     private int sumItemAmout;
     private LevelData mLevelData;
-    private bool isTutorial = false, isOpenTutorial = false, isClickbtn = false;
     private void Start()
     {
         btnSetting.onClick.AddListener(() =>
@@ -26,46 +25,6 @@ public class CanvasGamePlay : UICanvas
             CanvasSetting setting = UIManager.Instance.OpenUI<CanvasSetting>();
             setting.Active();
             SoundManager.Instance.PlaySound(eAudioType.SETTING_CLIP);
-        });
-        btnOpenAndCloseTutorial.onClick.AddListener(() =>
-        {
-            if (isClickbtn) return;
-            if (GameController.Instance.GetIndexTutotial() == 3)
-            {
-                GameController.Instance.SetIndexTutotial();
-            }
-            isOpenTutorial = !isOpenTutorial;
-            GameController.Instance.SetIsTutorial(isOpenTutorial);
-            isClickbtn = true;
-            if (isOpenTutorial)
-            {
-                Recttutorial.gameObject.SetActive(true);
-                iconbtnOpenTutorial.DORotate(new Vector3(0, 0, -180), 0.2f);
-                Recttutorial.DOAnchorPosX(0, 0.3f).OnComplete(() =>
-                {
-                    RectIconHand.DOAnchorPosY(-750, 0.5f).OnStepComplete(() =>
-                    {
-                        IconHand.DORotate(new Vector3(0, 180, 10), 0.2f).SetLoops(6, LoopType.Yoyo).OnComplete(() =>
-                        {
-                            RectIconHand.DOAnchorPosY(0, 0.5f).OnComplete(() =>
-                            {
-                                IconHand.DORotate(new Vector3(0, 180, 10), 0.2f).SetLoops(6, LoopType.Yoyo).OnComplete(() => isClickbtn = false);
-                            });
-                        });
-                    });
-                });
-            }
-            else
-            {
-                Recttutorial.DOAnchorPosX(2500, 0.3f).OnComplete(() =>
-                {
-                    Recttutorial.gameObject.SetActive(false);
-                    DOTween.Restart(RectIconHand);
-                    DOTween.Restart(IconHand);
-                    isClickbtn = false;
-                });
-                iconbtnOpenTutorial.DORotate(new Vector3(0, 0, -0.1f), 0.2f);
-            }
         });
     }
 
@@ -178,11 +137,13 @@ public class CanvasGamePlay : UICanvas
     {
         if (isTutorial)
         {
+            canvasHand.sortingLayerName = "Board";
             iconhand.gameObject.SetActive(true);
             iconhand.DORotate(new Vector3(0, 0, 10), 0.15f).SetLoops(-1, LoopType.Yoyo);
         }
         else
         {
+            canvasHand.sortingOrder = 1;
             iconhand.DOKill();
             iconhand.gameObject.SetActive(false);
         }

@@ -54,22 +54,27 @@ public class SelectLevelUI : UICanvas
     }
     public void PlayGame()
     {
-        box.DOAnchorPos(new Vector2(0, 1700), 0f);
-        overlay.DOFade(0.1f, 0f);
-        overlay.gameObject.SetActive(false);
-        GameController.Instance.SetLevelData(LevelData);
-        GameController.Instance.SetState(eStateGame.STARTED);
-        GameController.Instance.ChangeState();
-        if (GameController.Instance.GetIndexTutotial() == 4)
+        box.DOAnchorPos(new Vector2(0, 1700), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
         {
-            canvasBtnPlay.sortingOrder = 2;
-            HandTutorial(false, true);
-            GameController.Instance.SetIndexTutotial();
-            GameController.Instance.SetCanvasTutorial("Board");
-            GameController.Instance.ActiveTutorialGameplay();
-        }
-        UIManager.Instance.CloseUI<CanvasMain>(0f);
-        UIManager.Instance.CloseUI<SelectLevelUI>(0f);
+            overlay.DOFade(0.1f, 0.1f).OnComplete(() =>
+            {
+                overlay.gameObject.SetActive(false);
+                GameController.Instance.SetLevelData(LevelData);
+                GameController.Instance.SetState(eStateGame.STARTED);
+                GameController.Instance.ChangeState();
+                if (GameController.Instance.GetIndexTutotial() == 4)
+                {
+                    canvasBtnPlay.sortingOrder = 2;
+                    HandTutorial(false, true);
+                    GameController.Instance.SetIndexTutotial();
+                    GameController.Instance.SetCanvasTutorial("Board");
+                    //GameController.Instance.ActiveTutorialGameplay();
+                }
+                UIManager.Instance.CloseUI<CanvasMain>(0f);
+                UIManager.Instance.CloseUI<SelectLevelUI>(0f);
+            });
+
+        });
     }
     public void DeActive()
     {

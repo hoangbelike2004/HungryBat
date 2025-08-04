@@ -10,8 +10,8 @@ public class CanvasSetting : UICanvas
 {
     [SerializeField] Button btnClose;
     [SerializeField] Image overlay;
-    [SerializeField] RectTransform box;
-    [SerializeField] Button btnQuit;
+    [SerializeField] RectTransform box, QuitGameLevelPopup, QuitGamePopup;
+    [SerializeField] Button btnQuit, btnQuitlevel, btnContinue, btnDisagree, btnAgree;
     [SerializeField] GameSetting gameSetting;
     public float musicvalue;
 
@@ -37,20 +37,39 @@ public class CanvasSetting : UICanvas
             SoundManager.Instance.PlaySound(eAudioType.OPEN_CLIP);
             if (GameController.Instance.StateGame == eStateGame.STARTED)
             {
-                box.DOAnchorPos(new Vector2(0, 1700), 0f);
-                overlay.DOFade(0.1f, 0f);
-                overlay.gameObject.SetActive(false);
-                UIManager.Instance.CloseAll();
-                GameController.Instance.SetState(eStateGame.MAIN_MENU);
-                GameController.Instance.ChangeState();
-                GameController.Instance.SetHearts(1);
+                Invoke(nameof(ActiveQuitGameLevelPopup), 0.1f);
             }
             else
             {
-                Application.Quit();
+                Invoke(nameof(ActiveQuitGamePopup), 0.1f);
             }
         });
-
+        btnContinue.onClick.AddListener(() =>
+        {
+            QuitGameLevelPopup.DOAnchorPos(new Vector2(0, 2000), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
+            {
+                overlay.DOFade(0.1f, 0.1f).OnComplete(() =>
+                {
+                    overlay.gameObject.SetActive(false);
+                    QuitGameLevelPopup.gameObject.SetActive(false);
+                    UIManager.Instance.CloseUI<CanvasSetting>(0f);
+                });
+            });
+        });
+        btnDisagree.onClick.AddListener(() =>
+        {
+            QuitGamePopup.DOAnchorPos(new Vector2(0, 2000), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
+            {
+                overlay.DOFade(0.1f, 0.1f).OnComplete(() =>
+                {
+                    overlay.gameObject.SetActive(false);
+                    QuitGamePopup.gameObject.SetActive(false);
+                    UIManager.Instance.CloseUI<CanvasSetting>(0f);
+                });
+            });
+        });
+        btnAgree.onClick.AddListener(DeactiveQuitGamePopup);
+        btnQuitlevel.onClick.AddListener(DeactiveQuitGameLevelPopup);
         //MUSIC
         btnActiveMusic.onClick.AddListener(ActiveMusic);
         btnDeactiveMucsic.onClick.AddListener(DeActiveMusic);
@@ -83,7 +102,7 @@ public class CanvasSetting : UICanvas
     {
         gameSetting.volumeMusic = sliderMusic.value;
         SoundManager.Instance.SetVolumeMusic(gameSetting.volumeMusic);
-        if(sliderMusic.value > 0)
+        if (sliderMusic.value > 0)
         {
             btnActiveMusic.gameObject.SetActive(false);
             btnDeactiveMucsic.gameObject.SetActive(true);
@@ -139,7 +158,7 @@ public class CanvasSetting : UICanvas
     }
     public void DeActive()
     {
-        box.DOAnchorPos(new Vector2(0, 1700), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
+        box.DOAnchorPos(new Vector2(0, 2000), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
         {
             overlay.DOFade(0.1f, 0.1f).OnComplete(() =>
             {
@@ -149,5 +168,50 @@ public class CanvasSetting : UICanvas
 
         });
 
+    }
+
+    public void ActiveQuitGamePopup()
+    {
+        box.DOAnchorPos(new Vector2(0, 2000), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
+        {
+            QuitGamePopup.gameObject.SetActive(true);
+            QuitGamePopup.DOAnchorPos(new Vector2(0, 0), 0.3f).SetEase(Ease.OutBounce);
+        });
+    }
+    public void DeactiveQuitGamePopup()
+    {
+        QuitGamePopup.DOAnchorPos(new Vector2(0, 2000), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
+        {
+            overlay.DOFade(0.1f, 0.1f).OnComplete(() =>
+            {
+                overlay.gameObject.SetActive(false);
+                QuitGamePopup.gameObject.SetActive(false);
+                UIManager.Instance.CloseUI<CanvasSetting>(0f);
+                Application.Quit();
+            });
+        });
+    }
+    public void ActiveQuitGameLevelPopup()
+    {
+        box.DOAnchorPos(new Vector2(0, 2000), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
+        {
+            QuitGameLevelPopup.gameObject.SetActive(true);
+            QuitGameLevelPopup.DOAnchorPos(new Vector2(0, 0), 0.3f).SetEase(Ease.OutBounce);
+        });
+    }
+    public void DeactiveQuitGameLevelPopup()
+    {
+        QuitGameLevelPopup.DOAnchorPos(new Vector2(0, 2000), 0.2f).SetEase(Ease.InQuint).OnComplete(() =>
+        {
+            overlay.DOFade(0.1f, 0.1f).OnComplete(() =>
+            {
+                overlay.gameObject.SetActive(false);
+                QuitGameLevelPopup.gameObject.SetActive(false);
+                UIManager.Instance.CloseAll();
+                GameController.Instance.SetState(eStateGame.MAIN_MENU);
+                GameController.Instance.ChangeState();
+                GameController.Instance.SetHearts(1);
+            });
+        });
     }
 }

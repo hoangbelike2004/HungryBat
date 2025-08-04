@@ -74,6 +74,8 @@ public static class Constants
 
     public const string PREFAB_ITEM_SHOP = "Prefabs/ItemShop";
 
+    public const string PREFAB_TUTORIAL = "Prefabs/Tutorial";
+
     public const string KEY_DATA_PLAYER = "DATAPLAYER";
 
     public const string KEY_LATE_LOGIN_DATE = "LATELOGINDATE";

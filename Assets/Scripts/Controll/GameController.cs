@@ -65,7 +65,12 @@ public class GameController : Singleton<GameController>
             m_CanvasTutorial = UIManager.Instance.OpenUI<CanvasTutorial>();
             m_canvasMain.SetCanvasLevel1(4);
             m_canvasMain.HandTutorial(true);
+            for(int i = 0;i < m_gameSupportBonus.bonusDatas.Count;i++)
+            {
+                m_gameSupportBonus.bonusDatas[i].state = eStateBonusItem.UNSELECTED;    
+            }
         }
+        StartCoroutine(CheckTimeQuit());
     }
     public void FixedUpdate()
     {
@@ -338,22 +343,27 @@ public class GameController : Singleton<GameController>
             m_selectLevelUI.HandTutorial(false,false);
         }else if(IndexTutorial == 3)
         {
-            m_canvasGamePlay.HandTutorial(false);
-        }
-        if(IndexTutorial == 2)
-        {
-            m_canvasGamePlay.HandTutorial(false);
-            UIManager.Instance.CloseUI<CanvasTutorial>(0f);
-            PlayerPrefs.SetInt(Constants.KEY_TUTORIAL,IndexTutorial);
-        }
-    }
-    public void ActiveTutorialGameplay()
-    {
-        if (GameController.Instance.GetIndexTutotial() == 3)
-        {
             m_canvasGamePlay.HandTutorial(true);
         }
+        else if(IndexTutorial == 2)
+        {
+            m_canvasGamePlay.HandTutorial(false);
+            m_boarcontroll.ActiveTutorial();
+        }
+        else if(IndexTutorial == 1)
+        {
+            m_boarcontroll.DeactiveTutorial();
+            UIManager.Instance.CloseUI<CanvasTutorial>(0f);
+            PlayerPrefs.SetInt(Constants.KEY_TUTORIAL, IndexTutorial);
+        }
     }
+    //public void ActiveTutorialGameplay()
+    //{
+    //    if (GameController.Instance.GetIndexTutotial() == 3)
+    //    {
+    //        m_canvasGamePlay.HandTutorial(true);
+    //    }
+    //}
 
     public void SetCanvasTutorial(string name)
     {
@@ -392,9 +402,24 @@ public class GameController : Singleton<GameController>
         }
         DataUtils.SaveData(m_gameSetting.hearts, coin, level, currentProgess, m_gameevent.events
             , m_gameSupportBonus.bonusDatas, m_gameSetting.volumeMusic, m_gameSetting.volumeSound);
+        SaveTimeQuit();
+
+    }
+
+    IEnumerator CheckTimeQuit()
+    {
+        WaitForSeconds waitFor = new WaitForSeconds(60);
+        while (true)
+        {
+            yield return waitFor;
+            SaveTimeQuit();
+            LoadDataEvent(currentProgess);
+        }
+    }
+    public void SaveTimeQuit()
+    {
         DateTime date = DateTime.Now;
         PlayerPrefs.SetString(Constants.KEY_LATE_LOGIN_DATE, date.ToString("yyyy-MM-dd"));
-
     }
 
     public void LoadDataPlayer()
@@ -410,20 +435,7 @@ public class GameController : Singleton<GameController>
             //loadsetting
             m_gameSetting.LoadDataSetting(playerdata.hearts, playerdata.VolumeMusic, playerdata.volumeSound);
             //loadevent
-            if (PlayerPrefs.HasKey(Constants.KEY_LATE_LOGIN_DATE))
-            {
-                string strDate = PlayerPrefs.GetString(Constants.KEY_LATE_LOGIN_DATE);
-                DateTime latedate = DateTime.Parse(strDate);
-                DateTime today = DateTime.Now.Date;
-                if (today > latedate)
-                {
-                    currentProgess = 0;
-                }
-                else
-                {
-                    currentProgess = playerdata.currentProgess;
-                }
-            }
+            LoadDataEvent(playerdata.currentProgess);
             m_gameevent.LoadDataEvent(playerdata.events);
             //lOADCOIN
             coin = playerdata.coin;
@@ -431,6 +443,23 @@ public class GameController : Singleton<GameController>
         else
         {
             m_gameSetting.hearts = m_gameSetting.heartMax;
+        }
+    }
+    public void LoadDataEvent(int currentProgess)
+    {
+        if (PlayerPrefs.HasKey(Constants.KEY_LATE_LOGIN_DATE))
+        {
+            string strDate = PlayerPrefs.GetString(Constants.KEY_LATE_LOGIN_DATE);
+            DateTime latedate = DateTime.Parse(strDate);
+            DateTime today = DateTime.Now.Date;
+            if (today > latedate)
+            {
+                currentProgess = 0;
+            }
+            else
+            {
+                this.currentProgess = currentProgess;
+            }
         }
     }
     public void LoadHeartData()
