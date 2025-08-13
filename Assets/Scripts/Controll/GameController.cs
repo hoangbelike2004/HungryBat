@@ -252,10 +252,12 @@ public class GameController : Singleton<GameController>
                 _levelData.levelType = eStateLevel.COMPLETE;
                 if (_levelData.coin > 0)
                 {
+                    int tmp = _levelData.coin;
                     coin += _levelData.coin;
                     cointmp = _levelData.coin;
                     _levelData.coin = 0;
                     m_canvasMain.UpdateCoin(coin);
+                    _levelData.coin = tmp;
                 }
             }
         }

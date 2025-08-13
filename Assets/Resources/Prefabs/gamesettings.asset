@@ -19,7 +19,7 @@ MonoBehaviour:
   MatchesMin: 3
   TimeForHint: 5
   hearts: 5
-  heartMax: 3
+  heartMax: 5
   MaxTimeHeart: 1
   volumeMusic: 1
   volumeSound: 1
